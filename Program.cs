@@ -1,6 +1,7 @@
 using wBialyBezdomnyEdition.Config;
 using wBialyBezdomnyEdition.Database.NoSQL;
 using wBialyDBAdapter.Config;
+using wBialyBezdomnyEdition.Repository.NoSQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +26,11 @@ builder.Services.Configure<ObjectRelationalDBSettings>(databaseSections.GetSecti
 builder.Services.Configure<NoSQLDBSettings>(databaseSections.GetSection("NoSQLDatabaseSettings"));
 
 builder.Services.AddSingleton<NoSQLDB>();
+
+builder.Services.AddScoped<IOnSiteRepository, OnSiteRepository>();
+builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IGastroRepository, GastroRepository>();
+
 
 var app = builder.Build();
 
