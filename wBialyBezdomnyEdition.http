@@ -1,6 +1,0 @@
-@wBialyBezdomnyEdition_HostAddress = http://localhost:5229
-
-GET {{wBialyBezdomnyEdition_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

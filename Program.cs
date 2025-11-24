@@ -1,5 +1,6 @@
 using wBialyBezdomnyEdition.Config;
 using wBialyBezdomnyEdition.Database.NoSQL;
+using wBialyDBAdapter.Config;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +9,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Section with all databases configuration
+var databaseSections = builder.Configuration.GetSection("Databases");
+
+// Add Relational Database
+builder.Services.Configure<RelationalDBSettings>(databaseSections.GetSection("RelationalDatabaseSettings"));
+
+// Add Object Relational Database
+builder.Services.Configure<ObjectRelationalDBSettings>(databaseSections.GetSection("ObjectRelationalDatabaseSettings"));
 
 // Add NoSQL Database
-builder.Services.Configure<NoSQLDBSettings>(builder.Configuration.GetSection("NoSQLDatabaseSettings"));
+builder.Services.Configure<NoSQLDBSettings>(databaseSections.GetSection("NoSQLDatabaseSettings"));
+
 builder.Services.AddSingleton<NoSQLDB>();
 
 var app = builder.Build();
@@ -19,6 +32,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
