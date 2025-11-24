@@ -2,7 +2,6 @@
 using MongoDB.Driver;
 using wBialyBezdomnyEdition.Config;
 using wBialyBezdomnyEdition.Database.NoSQL.Entities;
-using Tag = wBialyBezdomnyEdition.Database.NoSQL.Entities.Tag;
 
 namespace wBialyBezdomnyEdition.Database.NoSQL
 {
@@ -16,10 +15,9 @@ namespace wBialyBezdomnyEdition.Database.NoSQL
             _database = client.GetDatabase(settings.Value.DatabaseName);
         }
 
-        public IMongoCollection<Post> Posts => _database.GetCollection<Post>("Posts");
+        public IMongoCollection<OnSite> OnSite => _database.GetCollection<OnSite>("OnSite");
         public IMongoCollection<Event> Events => _database.GetCollection<Event>("Events");
         public IMongoCollection<Gastro> Gastros => _database.GetCollection<Gastro>("Gastros");
-        public IMongoCollection<Tag> Tags => _database.GetCollection<Tag>("Tags");
     }
 
 }
