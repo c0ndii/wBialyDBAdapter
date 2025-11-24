@@ -2,7 +2,7 @@
 
 namespace wBialyBezdomnyEdition.Database.NoSQL.Entities
 {
-    public class Post
+    public abstract class Post
     {
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
