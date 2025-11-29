@@ -19,30 +19,22 @@ namespace wBialyDBAdapter.Controllers
             _gastroService = gastroService;
         }
 
-        [HttpGet]
+        [HttpPost("filter")]
         public async Task<ActionResult<EndpointResponse<IReadOnlyList<Gastro>>>> GetAll(
+            [FromBody] EndpointRequest request,
             CancellationToken cancellationToken)
         {
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
+            request.DatabaseType = DatabaseType.NoSQL;
             var response = await _gastroService.GetManyAsync(request, cancellationToken);
-
             return Ok(response);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<EndpointResponse<Gastro?>>> GetById(
-            string id,
+            [FromRoute] string id,
+            [FromQuery] BaseRequest request,
             CancellationToken cancellationToken)
         {
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
             var response = await _gastroService.GetByKeyAsync(request, id, cancellationToken);
 
             if (response.Data == null)
@@ -53,51 +45,35 @@ namespace wBialyDBAdapter.Controllers
 
         [HttpPost]
         public async Task<ActionResult<EndpointResponse<IReadOnlyList<Gastro>>>> Create(
-            [FromBody] Gastro model,
+            [FromBody] PostRequest<Gastro> request,
             CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
+            if (request.Data == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
-            var response = await _gastroService.AddAsync(request, model, cancellationToken);
-
+            var response = await _gastroService.AddAsync(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<EndpointResponse<IReadOnlyList<Gastro>>>> Update(
-            string id,
-            [FromBody] Gastro model,
+            [FromRoute] string id,
+            [FromBody] PostRequest<Gastro> request,
             CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
+            if (request.Data == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
-            var response = await _gastroService.UpdateAsync(request, id, model, cancellationToken);
-
+            var response = await _gastroService.UpdateAsync(request, id, cancellationToken);
             return Ok(response);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<EndpointResponse<bool>>> Delete(
-            string id,
+            [FromRoute] string id,
+            [FromBody] BaseRequest request,
             CancellationToken cancellationToken)
         {
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
             var response = await _gastroService.DeleteAsync(request, id, cancellationToken);
 
             if (!response.Data)

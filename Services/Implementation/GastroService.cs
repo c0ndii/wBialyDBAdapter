@@ -6,20 +6,20 @@ using wBialyBezdomnyEdition.Database.NoSQL.Entities;
 using wBialyBezdomnyEdition.Repository.NoSQL;
 using wBialyDBAdapter.Model;
 
-namespace wBialyDBAdapter.Services
+namespace wBialyDBAdapter.Services.Implementation
 {
     public class GastroService : IQueryService<Gastro>
     {
-        private readonly IGastroRepository _NoSqlRepository;
+        private readonly IBaseRepository<Gastro> _NoSqlRepository;
 
-        public GastroService(IGastroRepository noSqlRepository)
+        public GastroService(IBaseRepository<Gastro> noSqlRepository)
         {
             _NoSqlRepository = noSqlRepository;
         }
 
         public async Task<EndpointResponse<Gastro?>> GetByKeyAsync(
-            EndpointRequest request,
-            string id,
+            BaseRequest request,
+            string id, 
             CancellationToken cancellationToken = default)
         {
             switch (request.DatabaseType)
@@ -40,7 +40,7 @@ namespace wBialyDBAdapter.Services
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    var result = await _NoSqlRepository.GetManyAsync();
+                    var result = await _NoSqlRepository.GetManyAsync(request);
                     return new EndpointResponse<IReadOnlyList<Gastro>> { Data = result };
 
                 default:
@@ -52,16 +52,14 @@ namespace wBialyDBAdapter.Services
         }
 
         public async Task<EndpointResponse<IReadOnlyList<Gastro>>> AddAsync(
-            EndpointRequest request,
-            Gastro data,
+            PostRequest<Gastro> request,
             CancellationToken cancellationToken = default)
         {
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    await _NoSqlRepository.AddAsync(data);
-                    var result = await _NoSqlRepository.GetManyAsync();
-                    return new EndpointResponse<IReadOnlyList<Gastro>> { Data = result };
+                    await _NoSqlRepository.AddAsync(request.Data);
+                    return new EndpointResponse<IReadOnlyList<Gastro>> { Data = null };
 
                 default:
                     return new EndpointResponse<IReadOnlyList<Gastro>>
@@ -72,17 +70,15 @@ namespace wBialyDBAdapter.Services
         }
 
         public async Task<EndpointResponse<IReadOnlyList<Gastro>>> UpdateAsync(
-            EndpointRequest request,
+            PostRequest<Gastro> request,
             string id,
-            Gastro data,
             CancellationToken cancellationToken = default)
         {
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    await _NoSqlRepository.UpdateAsync(id, data);
-                    var result = await _NoSqlRepository.GetManyAsync();
-                    return new EndpointResponse<IReadOnlyList<Gastro>> { Data = result };
+                    await _NoSqlRepository.UpdateAsync(id, request.Data);
+                    return new EndpointResponse<IReadOnlyList<Gastro>> { Data = [request.Data] };
 
                 default:
                     return new EndpointResponse<IReadOnlyList<Gastro>>
@@ -93,7 +89,7 @@ namespace wBialyDBAdapter.Services
         }
 
         public async Task<EndpointResponse<bool>> DeleteAsync(
-            EndpointRequest request,
+            BaseRequest request,
             string id,
             CancellationToken cancellationToken = default)
         {

@@ -4,6 +4,8 @@ using wBialyDBAdapter.Config;
 using wBialyBezdomnyEdition.Repository.NoSQL;
 using wBialyDBAdapter.Services;
 using wBialyBezdomnyEdition.Database.NoSQL.Entities;
+using wBialyDBAdapter.Services.Implementation;
+using wBialyDBAdapter.Repository.NoSQL.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,19 +31,8 @@ builder.Services.Configure<NoSQLDBSettings>(databaseSections.GetSection("NoSQLDa
 
 builder.Services.AddSingleton<NoSQLDB>();
 
-builder.Services.AddScoped<IOnSiteRepository, OnSiteRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
-builder.Services.AddScoped<IGastroRepository, GastroRepository>();
-
-builder.Services.AddScoped<IBaseRepository<OnSite>>(sp =>
-    sp.GetRequiredService<IOnSiteRepository>());
-
-builder.Services.AddScoped<IBaseRepository<Event>>(sp =>
-    sp.GetRequiredService<IEventRepository>());
-
-builder.Services.AddScoped<IBaseRepository<Gastro>>(sp =>
-    sp.GetRequiredService<IGastroRepository>());
-
+builder.Services.AddScoped<IBaseRepository<Event>, EventRepository>();
+builder.Services.AddScoped<IBaseRepository<Gastro>, GastroRepository>();
 builder.Services.AddScoped<IQueryService<Event>, EventService>();
 builder.Services.AddScoped<IQueryService<Gastro>, GastroService>();
 

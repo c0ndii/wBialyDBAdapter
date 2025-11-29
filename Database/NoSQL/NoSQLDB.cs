@@ -15,7 +15,6 @@ namespace wBialyBezdomnyEdition.Database.NoSQL
             _database = client.GetDatabase(settings.Value.DatabaseName);
         }
 
-        public IMongoCollection<OnSite> OnSite => _database.GetCollection<OnSite>("OnSite");
         public IMongoCollection<Event> Events => _database.GetCollection<Event>("Events");
         public IMongoCollection<Gastro> Gastros => _database.GetCollection<Gastro>("Gastros");
     }

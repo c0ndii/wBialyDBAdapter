@@ -2,26 +2,26 @@
 using wBialyBezdomnyEdition.Repository.NoSQL;
 using wBialyDBAdapter.Model;
 
-namespace wBialyDBAdapter.Services
+namespace wBialyDBAdapter.Services.Implementation
 {
     public class EventService : IQueryService<Event>
     {
-        private readonly IEventRepository _noSqlRepository;
+        private readonly IBaseRepository<Event> _noSqlRepository;
 
-        public EventService(IEventRepository noSqlRepository)
+        public EventService(IBaseRepository<Event> noSqlRepository)
         {
             _noSqlRepository = noSqlRepository;
         }
 
         public async Task<EndpointResponse<Event?>> GetByKeyAsync(
-            EndpointRequest request,
+            BaseRequest request,
             string id,
             CancellationToken cancellationToken = default)
         {
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    var result = await _noSqlRepository.GetByKeyAsync(id.ToString());
+                    var result = await _noSqlRepository.GetByKeyAsync(id);
                     return new EndpointResponse<Event?> { Data = result };
 
                 default:
@@ -36,7 +36,7 @@ namespace wBialyDBAdapter.Services
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    var result = await _noSqlRepository.GetManyAsync();
+                    var result = await _noSqlRepository.GetManyAsync(request);
                     return new EndpointResponse<IReadOnlyList<Event>> { Data = result };
 
                 default:
@@ -48,16 +48,16 @@ namespace wBialyDBAdapter.Services
         }
 
         public async Task<EndpointResponse<IReadOnlyList<Event>>> AddAsync(
-            EndpointRequest request,
-            Event data,
+            PostRequest<Event> request,
             CancellationToken cancellationToken = default)
         {
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    await _noSqlRepository.AddAsync(data);
-                    var result = await _noSqlRepository.GetManyAsync();
-                    return new EndpointResponse<IReadOnlyList<Event>> { Data = result };
+                    if (request.Data != null)
+                        await _noSqlRepository.AddAsync(request.Data);
+
+                    return new EndpointResponse<IReadOnlyList<Event>> { Data = null };
 
                 default:
                     return new EndpointResponse<IReadOnlyList<Event>>
@@ -68,17 +68,17 @@ namespace wBialyDBAdapter.Services
         }
 
         public async Task<EndpointResponse<IReadOnlyList<Event>>> UpdateAsync(
-            EndpointRequest request,
+            PostRequest<Event> request,
             string id,
-            Event data,
             CancellationToken cancellationToken = default)
         {
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    await _noSqlRepository.UpdateAsync(id.ToString(), data);
-                    var result = await _noSqlRepository.GetManyAsync();
-                    return new EndpointResponse<IReadOnlyList<Event>> { Data = result };
+                    if (request.Data != null)
+                        await _noSqlRepository.UpdateAsync(id, request.Data);
+
+                    return new EndpointResponse<IReadOnlyList<Event>> { Data = new List<Event> { request.Data } };
 
                 default:
                     return new EndpointResponse<IReadOnlyList<Event>>
@@ -89,14 +89,14 @@ namespace wBialyDBAdapter.Services
         }
 
         public async Task<EndpointResponse<bool>> DeleteAsync(
-            EndpointRequest request,
+            BaseRequest request,
             string id,
             CancellationToken cancellationToken = default)
         {
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
-                    await _noSqlRepository.DeleteAsync(id.ToString());
+                    await _noSqlRepository.DeleteAsync(id);
                     return new EndpointResponse<bool> { Data = true };
 
                 default:

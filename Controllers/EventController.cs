@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,27 +19,21 @@ namespace wBialyDBAdapter.Controllers
             _eventService = eventService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<EndpointResponse<IReadOnlyList<Event>>>> GetAll(CancellationToken cancellationToken)
-        {
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
+        [HttpPost("filter")]
+        public async Task<ActionResult<EndpointResponse<IReadOnlyList<Event>>>> GetAll(
+            [FromBody] EndpointRequest request,
+            CancellationToken cancellationToken)
+        {;
             var response = await _eventService.GetManyAsync(request, cancellationToken);
-
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EndpointResponse<Event?>>> GetById(string id, CancellationToken cancellationToken)
+        public async Task<ActionResult<EndpointResponse<Event?>>> GetById(
+            [FromRoute] string id,
+            [FromQuery] BaseRequest request,
+            CancellationToken cancellationToken)
         {
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
             var response = await _eventService.GetByKeyAsync(request, id, cancellationToken);
 
             if (response.Data == null)
@@ -51,51 +44,35 @@ namespace wBialyDBAdapter.Controllers
 
         [HttpPost]
         public async Task<ActionResult<EndpointResponse<IReadOnlyList<Event>>>> Create(
-            [FromBody] Event model,
+            [FromBody] PostRequest<Event> request,
             CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
+            if (request.Data == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
-            var response = await _eventService.AddAsync(request, model, cancellationToken);
-
+            var response = await _eventService.AddAsync(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<EndpointResponse<IReadOnlyList<Event>>>> Update(
-            string id,
-            [FromBody] Event model,
+            [FromRoute] string id,
+            [FromBody] PostRequest<Event> request,
             CancellationToken cancellationToken)
         {
-            if (!ModelState.IsValid)
+            if (request.Data == null || !ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
-            var response = await _eventService.UpdateAsync(request, id, model, cancellationToken);
-
+            var response = await _eventService.UpdateAsync(request, id, cancellationToken);
             return Ok(response);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult<EndpointResponse<bool>>> Delete(
-            string id,
+            [FromRoute] string id,
+            [FromBody] EndpointRequest request,
             CancellationToken cancellationToken)
         {
-            var request = new EndpointRequest
-            {
-                DatabaseType = DatabaseType.NoSQL
-            };
-
             var response = await _eventService.DeleteAsync(request, id, cancellationToken);
 
             if (!response.Data)
