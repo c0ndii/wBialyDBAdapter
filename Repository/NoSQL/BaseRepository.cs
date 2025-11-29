@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Linq.Expressions;
 using wBialyBezdomnyEdition.Database.NoSQL;
 
@@ -29,7 +30,8 @@ namespace wBialyBezdomnyEdition.Repository.NoSQL
 
         public async Task<T> GetByKeyAsync(string id)
         {
-            var filter = Builders<T>.Filter.Eq("Id", id);
+            var objectId = ObjectId.Parse(id);
+            var filter = Builders<T>.Filter.Eq("_id", objectId);
             return await _collection.Find(filter).FirstOrDefaultAsync();
         }
 
