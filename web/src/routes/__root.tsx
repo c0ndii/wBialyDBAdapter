@@ -1,15 +1,10 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router"
-import * as React from "react"
+import { Layout } from "@/components"
+import { createRootRoute } from "@tanstack/react-router"
 
 export const Route = createRootRoute({
   component: RootComponent,
 })
 
 function RootComponent() {
-  return (
-    <React.Fragment>
-      <div>Hello "__root"!</div>
-      <Outlet />
-    </React.Fragment>
-  )
+  return <Layout />
 }
