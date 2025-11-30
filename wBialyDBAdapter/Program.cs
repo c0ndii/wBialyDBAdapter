@@ -1,11 +1,19 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System.Data;
 using wBialyBezdomnyEdition.Config;
 using wBialyBezdomnyEdition.Database.NoSQL;
-using wBialyDBAdapter.Config;
-using wBialyBezdomnyEdition.Repository.NoSQL;
-using wBialyDBAdapter.Services;
 using wBialyBezdomnyEdition.Database.NoSQL.Entities;
-using wBialyDBAdapter.Services.Implementation;
+using wBialyBezdomnyEdition.Database.ObjectRelational;
+using wBialyBezdomnyEdition.Repository.NoSQL;
+using wBialyDBAdapter.Config;
 using wBialyDBAdapter.Repository.NoSQL.Implementation;
+using wBialyDBAdapter.Repository.ObjectRelational;
+using wBialyDBAdapter.Repository.ObjectRelational.Implementation;
+using wBialyDBAdapter.Repository.Relational;
+using wBialyDBAdapter.Services;
+using wBialyDBAdapter.Services.Implementation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,17 +30,36 @@ var databaseSections = builder.Configuration.GetSection("Databases");
 
 // Add Relational Database
 builder.Services.Configure<RelationalDBSettings>(databaseSections.GetSection("RelationalDatabaseSettings"));
+builder.Services.AddScoped<SqlConnection>(sp =>
+{
+    var settings = sp.GetRequiredService<IOptions<RelationalDBSettings>>().Value;
+    return new SqlConnection(settings.ConnectionString);
+});
 
 // Add Object Relational Database
 builder.Services.Configure<ObjectRelationalDBSettings>(databaseSections.GetSection("ObjectRelationalDatabaseSettings"));
+builder.Services.AddDbContext<ORDB>((serviceProvider, options) =>
+{
+    options.UseSqlServer(serviceProvider
+        .GetRequiredService<IOptions<ObjectRelationalDBSettings>>()
+        .Value.ConnectionString);
+});
 
 // Add NoSQL Database
 builder.Services.Configure<NoSQLDBSettings>(databaseSections.GetSection("NoSQLDatabaseSettings"));
-
 builder.Services.AddSingleton<NoSQLDB>();
 
-builder.Services.AddScoped<IBaseRepository<Event>, EventRepository>();
-builder.Services.AddScoped<IBaseRepository<Gastro>, GastroRepository>();
+// Add Relational Repositories
+builder.Services.AddScoped<wBialyDBAdapter.Repository.Relational.IEventRepository, EventRepository>();
+builder.Services.AddScoped<wBialyDBAdapter.Repository.Relational.IGastroRepository, GastroRepository>();
+
+// Add Object Relational Repositories
+builder.Services.AddScoped<wBialyDBAdapter.Repository.ObjectRelational.IEventRepository, wBialyDBAdapter.Repository.ObjectRelational.Implementation.EventRepository>();
+builder.Services.AddScoped<wBialyDBAdapter.Repository.ObjectRelational.IGastroRepository, wBialyDBAdapter.Repository.ObjectRelational.Implementation.GastroRepository>();
+
+// Add NoSQL Repositories
+builder.Services.AddScoped<IBaseRepository<Event>, wBialyDBAdapter.Repository.NoSQL.Implementation.EventRepository>();
+builder.Services.AddScoped<IBaseRepository<Gastro>, wBialyDBAdapter.Repository.NoSQL.Implementation. GastroRepository>();
 builder.Services.AddScoped<IQueryService<Event>, EventService>();
 builder.Services.AddScoped<IQueryService<Gastro>, GastroService>();
 

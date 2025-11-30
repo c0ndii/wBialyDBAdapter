@@ -5,7 +5,7 @@ using wBialyBezdomnyEdition.Database.NoSQL.Entities;
 
 namespace wBialyBezdomnyEdition.Database.NoSQL
 {
-    public class NoSQLDB : IDatabase
+    public class NoSQLDB
     {
         private readonly IMongoDatabase _database;
 
