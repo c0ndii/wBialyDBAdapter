@@ -1,9 +1,9 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Linq.Expressions;
-using wBialyBezdomnyEdition.Database.NoSQL;
-using wBialyBezdomnyEdition.Database.NoSQL.Entities;
-using wBialyBezdomnyEdition.Repository.NoSQL;
+using wBialyDBAdapter.Database.NoSQL;
+using wBialyDBAdapter.Database.NoSQL.Entities;
+using wBialyDBAdapter.Repository.NoSQL;
 using wBialyDBAdapter.Model;
 
 namespace wBialyDBAdapter.Repository.NoSQL.Implementation

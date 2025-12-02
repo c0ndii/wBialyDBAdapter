@@ -1,7 +1,6 @@
-﻿using System.Linq.Expressions;
-using wBialyDBAdapter.Model;
+﻿using wBialyDBAdapter.Model;
 
-namespace wBialyBezdomnyEdition.Repository.NoSQL
+namespace wBialyDBAdapter.Repository.NoSQL
 {
     public interface IBaseRepository<T> where T : class
     {

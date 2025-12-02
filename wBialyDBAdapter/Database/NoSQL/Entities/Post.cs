@@ -1,7 +1,7 @@
 ﻿    using MongoDB.Bson;
     using MongoDB.Bson.Serialization.Attributes;
 
-    namespace wBialyBezdomnyEdition.Database.NoSQL.Entities
+    namespace wBialyDBAdapter.Database.NoSQL.Entities
     {
         public abstract class Post
         {

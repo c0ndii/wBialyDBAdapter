@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using wBialyDBAdapter.Database.ObjectRelational.Entities;
 
-namespace wBialyBezdomnyEdition.Database.ObjectRelational
+namespace wBialyDBAdapter.Database.ObjectRelational
 {
     public class ORDB : DbContext
     {
@@ -36,6 +36,7 @@ namespace wBialyBezdomnyEdition.Database.ObjectRelational
                 .HasKey(t => t.TagID);
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Seed();
         }
     }
 }

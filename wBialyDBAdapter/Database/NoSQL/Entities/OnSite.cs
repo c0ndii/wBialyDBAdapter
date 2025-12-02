@@ -1,4 +1,4 @@
-﻿namespace wBialyBezdomnyEdition.Database.NoSQL.Entities
+﻿namespace wBialyDBAdapter.Database.NoSQL.Entities
 {
     public abstract class OnSite : Post
     {

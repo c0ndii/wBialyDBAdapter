@@ -1,4 +1,4 @@
-﻿namespace wBialyBezdomnyEdition.Database.NoSQL.Entities
+﻿namespace wBialyDBAdapter.Database.NoSQL.Entities
 {
     public class Event : OnSite
     {

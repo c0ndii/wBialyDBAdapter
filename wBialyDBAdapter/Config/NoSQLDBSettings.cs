@@ -1,4 +1,4 @@
-﻿namespace wBialyBezdomnyEdition.Config
+﻿namespace wBialyDBAdapter.Config
 {
     public class NoSQLDBSettings
     {

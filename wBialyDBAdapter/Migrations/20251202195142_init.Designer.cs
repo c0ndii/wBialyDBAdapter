@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using wBialyBezdomnyEdition.Database.ObjectRelational;
+using wBialyDBAdapter.Database.ObjectRelational;
 
 #nullable disable
 
 namespace wBialyDBAdapter.Migrations
 {
     [DbContext(typeof(ORDB))]
-    [Migration("20251130144921_init")]
+    [Migration("20251202195142_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -38,6 +38,18 @@ namespace wBialyDBAdapter.Migrations
                     b.HasIndex("EventsPostId");
 
                     b.ToTable("EventTag_Event");
+
+                    b.HasData(
+                        new
+                        {
+                            EventTagsTagID = 1,
+                            EventsPostId = 1
+                        },
+                        new
+                        {
+                            EventTagsTagID = 2,
+                            EventsPostId = 2
+                        });
                 });
 
             modelBuilder.Entity("GastroTag_Gastro", b =>
@@ -53,6 +65,18 @@ namespace wBialyDBAdapter.Migrations
                     b.HasIndex("GastrosPostId");
 
                     b.ToTable("GastroTag_Gastro");
+
+                    b.HasData(
+                        new
+                        {
+                            GastroTagsTagID = 3,
+                            GastrosPostId = 3
+                        },
+                        new
+                        {
+                            GastroTagsTagID = 4,
+                            GastrosPostId = 4
+                        });
                 });
 
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Event", b =>
@@ -89,6 +113,28 @@ namespace wBialyDBAdapter.Migrations
                     b.HasKey("PostId");
 
                     b.ToTable("Events");
+
+                    b.HasData(
+                        new
+                        {
+                            PostId = 1,
+                            AddDate = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Admin",
+                            Description = "Największy festiwal rockowy w mieście.",
+                            Link = "https://event.com/rock",
+                            Place = "Białystok Arena",
+                            Title = "Rock Festival"
+                        },
+                        new
+                        {
+                            PostId = 2,
+                            AddDate = new DateTime(2025, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Admin",
+                            Description = "Turniej siatkówki amatorskiej.",
+                            Link = "https://event.com/sport",
+                            Place = "Hala Sportowa",
+                            Title = "Mecz siatkówki"
+                        });
                 });
 
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Gastro", b =>
@@ -125,6 +171,28 @@ namespace wBialyDBAdapter.Migrations
                     b.HasKey("PostId");
 
                     b.ToTable("Gastros");
+
+                    b.HasData(
+                        new
+                        {
+                            PostId = 3,
+                            AddDate = new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Admin",
+                            Description = "Promocje na pizzę w całym mieście.",
+                            Link = "https://gastro.com/pizza",
+                            Place = "PizzaHouse",
+                            Title = "Pizza Day"
+                        },
+                        new
+                        {
+                            PostId = 4,
+                            AddDate = new DateTime(2025, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Admin",
+                            Description = "Święto kuchni wegańskiej.",
+                            Link = "https://gastro.com/vegan",
+                            Place = "GreenFood",
+                            Title = "Vegan Fest"
+                        });
                 });
 
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Event", b =>
@@ -145,6 +213,20 @@ namespace wBialyDBAdapter.Migrations
                     b.HasKey("TagID");
 
                     b.ToTable("Tag_Event");
+
+                    b.HasData(
+                        new
+                        {
+                            TagID = 1,
+                            EventID = 0,
+                            Name = "Music"
+                        },
+                        new
+                        {
+                            TagID = 2,
+                            EventID = 0,
+                            Name = "Sport"
+                        });
                 });
 
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Gastro", b =>
@@ -165,6 +247,20 @@ namespace wBialyDBAdapter.Migrations
                     b.HasKey("TagID");
 
                     b.ToTable("Tag_Gastro");
+
+                    b.HasData(
+                        new
+                        {
+                            TagID = 3,
+                            GastroID = 0,
+                            Name = "Pizza"
+                        },
+                        new
+                        {
+                            TagID = 4,
+                            GastroID = 0,
+                            Name = "Vegan"
+                        });
                 });
 
             modelBuilder.Entity("EventTag_Event", b =>

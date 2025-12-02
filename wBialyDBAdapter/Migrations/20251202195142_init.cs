@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace wBialyDBAdapter.Migrations
 {
     /// <inheritdoc />
@@ -121,6 +123,60 @@ namespace wBialyDBAdapter.Migrations
                         principalTable: "Tag_Gastro",
                         principalColumn: "TagID",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Events",
+                columns: new[] { "PostId", "AddDate", "Author", "Description", "Link", "Place", "Title" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Największy festiwal rockowy w mieście.", "https://event.com/rock", "Białystok Arena", "Rock Festival" },
+                    { 2, new DateTime(2025, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Turniej siatkówki amatorskiej.", "https://event.com/sport", "Hala Sportowa", "Mecz siatkówki" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Gastros",
+                columns: new[] { "PostId", "AddDate", "Author", "Description", "Link", "Place", "Title" },
+                values: new object[,]
+                {
+                    { 3, new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Promocje na pizzę w całym mieście.", "https://gastro.com/pizza", "PizzaHouse", "Pizza Day" },
+                    { 4, new DateTime(2025, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Święto kuchni wegańskiej.", "https://gastro.com/vegan", "GreenFood", "Vegan Fest" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tag_Event",
+                columns: new[] { "TagID", "EventID", "Name" },
+                values: new object[,]
+                {
+                    { 1, 0, "Music" },
+                    { 2, 0, "Sport" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Tag_Gastro",
+                columns: new[] { "TagID", "GastroID", "Name" },
+                values: new object[,]
+                {
+                    { 3, 0, "Pizza" },
+                    { 4, 0, "Vegan" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "EventTag_Event",
+                columns: new[] { "EventTagsTagID", "EventsPostId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 2, 2 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "GastroTag_Gastro",
+                columns: new[] { "GastroTagsTagID", "GastrosPostId" },
+                values: new object[,]
+                {
+                    { 3, 3 },
+                    { 4, 4 }
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,8 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using wBialyBezdomnyEdition.Database.NoSQL.Entities;
 using wBialyDBAdapter.Model;
 using wBialyDBAdapter.Services;
 
@@ -12,24 +8,24 @@ namespace wBialyDBAdapter.Controllers
     [Route("api/[controller]")]
     public class EventController : ControllerBase
     {
-        private readonly IQueryService<Event> _eventService;
+        private readonly IQueryService<UnifiedEventModel> _eventService;
 
-        public EventController(IQueryService<Event> eventService)
+        public EventController(IQueryService<UnifiedEventModel> eventService)
         {
             _eventService = eventService;
         }
 
         [HttpPost("filter")]
-        public async Task<ActionResult<EndpointResponse<IReadOnlyList<Event>>>> GetAll(
+        public async Task<ActionResult<EndpointResponse<IReadOnlyList<UnifiedEventModel>>>> GetAll(
             [FromBody] EndpointRequest request,
             CancellationToken cancellationToken)
-        {;
+        {
             var response = await _eventService.GetManyAsync(request, cancellationToken);
             return Ok(response);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EndpointResponse<Event?>>> GetById(
+        public async Task<ActionResult<EndpointResponse<UnifiedEventModel?>>> GetById(
             [FromRoute] string id,
             [FromQuery] BaseRequest request,
             CancellationToken cancellationToken)
@@ -43,8 +39,8 @@ namespace wBialyDBAdapter.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<EndpointResponse<IReadOnlyList<Event>>>> Create(
-            [FromBody] PostRequest<Event> request,
+        public async Task<ActionResult<EndpointResponse<IReadOnlyList<UnifiedEventModel>>>> Create(
+            [FromBody] PostRequest<UnifiedEventModel> request,
             CancellationToken cancellationToken)
         {
             if (request.Data == null || !ModelState.IsValid)
@@ -55,9 +51,9 @@ namespace wBialyDBAdapter.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<EndpointResponse<IReadOnlyList<Event>>>> Update(
+        public async Task<ActionResult<EndpointResponse<IReadOnlyList<UnifiedEventModel>>>> Update(
             [FromRoute] string id,
-            [FromBody] PostRequest<Event> request,
+            [FromBody] PostRequest<UnifiedEventModel> request,
             CancellationToken cancellationToken)
         {
             if (request.Data == null || !ModelState.IsValid)
@@ -70,7 +66,7 @@ namespace wBialyDBAdapter.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<EndpointResponse<bool>>> Delete(
             [FromRoute] string id,
-            [FromBody] EndpointRequest request,
+            [FromBody] BaseRequest request,
             CancellationToken cancellationToken)
         {
             var response = await _eventService.DeleteAsync(request, id, cancellationToken);
@@ -81,4 +77,5 @@ namespace wBialyDBAdapter.Controllers
             return Ok(response);
         }
     }
+
 }

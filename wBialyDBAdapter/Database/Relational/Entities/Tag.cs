@@ -1,4 +1,4 @@
-﻿namespace wBialyBezdomnyEdition.Database.Relational.Entities
+﻿namespace wBialyDBAdapter.Database.Relational.Entities
 {
     public abstract class Tag
     {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using MongoDB.Driver;
-using wBialyBezdomnyEdition.Config;
-using wBialyBezdomnyEdition.Database.NoSQL.Entities;
+using wBialyDBAdapter.Config;
+using wBialyDBAdapter.Database.NoSQL.Entities;
 
-namespace wBialyBezdomnyEdition.Database.NoSQL
+namespace wBialyDBAdapter.Database.NoSQL
 {
     public class NoSQLDB
     {

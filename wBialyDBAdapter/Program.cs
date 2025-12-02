@@ -1,16 +1,15 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.Data;
-using wBialyBezdomnyEdition.Config;
-using wBialyBezdomnyEdition.Database.NoSQL;
-using wBialyBezdomnyEdition.Database.NoSQL.Entities;
-using wBialyBezdomnyEdition.Database.ObjectRelational;
-using wBialyBezdomnyEdition.Repository.NoSQL;
 using wBialyDBAdapter.Config;
-using wBialyDBAdapter.Repository.NoSQL.Implementation;
+using wBialyDBAdapter.Database.NoSQL;
+using wBialyDBAdapter.Database.NoSQL.Entities;
+using wBialyDBAdapter.Database.ObjectRelational;
+using wBialyDBAdapter.Mapping;
+using wBialyDBAdapter.Mapping.Implementation;
+using wBialyDBAdapter.Model;
+using wBialyDBAdapter.Repository.NoSQL;
 using wBialyDBAdapter.Repository.ObjectRelational;
-using wBialyDBAdapter.Repository.ObjectRelational.Implementation;
 using wBialyDBAdapter.Repository.Relational;
 using wBialyDBAdapter.Services;
 using wBialyDBAdapter.Services.Implementation;
@@ -49,19 +48,25 @@ builder.Services.AddDbContext<ORDB>((serviceProvider, options) =>
 builder.Services.Configure<NoSQLDBSettings>(databaseSections.GetSection("NoSQLDatabaseSettings"));
 builder.Services.AddSingleton<NoSQLDB>();
 
+// Add mappers
+builder.Services.AddScoped<IEventMapper, EventMapper>();
+builder.Services.AddScoped<IGastroMapper, GastroMapper>();
+
 // Add Relational Repositories
-builder.Services.AddScoped<wBialyDBAdapter.Repository.Relational.IEventRepository, EventRepository>();
-builder.Services.AddScoped<wBialyDBAdapter.Repository.Relational.IGastroRepository, GastroRepository>();
+builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Event>, EventRepository>();
+builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Gastro>, GastroRepository>();
 
 // Add Object Relational Repositories
-builder.Services.AddScoped<wBialyDBAdapter.Repository.ObjectRelational.IEventRepository, wBialyDBAdapter.Repository.ObjectRelational.Implementation.EventRepository>();
-builder.Services.AddScoped<wBialyDBAdapter.Repository.ObjectRelational.IGastroRepository, wBialyDBAdapter.Repository.ObjectRelational.Implementation.GastroRepository>();
+builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Event>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.EventRepository>();
+builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Gastro>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.GastroRepository>();
 
 // Add NoSQL Repositories
 builder.Services.AddScoped<IBaseRepository<Event>, wBialyDBAdapter.Repository.NoSQL.Implementation.EventRepository>();
-builder.Services.AddScoped<IBaseRepository<Gastro>, wBialyDBAdapter.Repository.NoSQL.Implementation. GastroRepository>();
-builder.Services.AddScoped<IQueryService<Event>, EventService>();
-builder.Services.AddScoped<IQueryService<Gastro>, GastroService>();
+builder.Services.AddScoped<IBaseRepository<Gastro>, wBialyDBAdapter.Repository.NoSQL.Implementation.GastroRepository>();
+
+// Add services
+builder.Services.AddScoped<IQueryService<UnifiedEventModel>, EventService>();
+builder.Services.AddScoped<IQueryService<UnifiedGastroModel>, GastroService>();
 
 var app = builder.Build();
 
