@@ -6,6 +6,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material"
+import { Link } from "@tanstack/react-router"
 import type { PropsWithChildren, ReactNode } from "react"
 
 function Root({ children }: PropsWithChildren<unknown>) {
@@ -26,9 +27,21 @@ function Root({ children }: PropsWithChildren<unknown>) {
   )
 }
 
-function Title({ children }: PropsWithChildren<unknown>) {
+function Title({ children, link }: PropsWithChildren<{ link: string }>) {
   return (
-    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+    <Typography
+      component={Link}
+      to={link}
+      variant="h6"
+      sx={(theme) => ({
+        fontWeight: 700,
+        textDecoration: "none",
+        color: theme.palette.getContrastText(theme.palette.background.default),
+        "&:hover": {
+          textDecoration: "underline",
+        },
+      })}
+    >
       {children}
     </Typography>
   )

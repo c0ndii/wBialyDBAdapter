@@ -1,5 +1,6 @@
 import { AppBar, Box, Toolbar, Typography } from "@mui/material"
 import { Link, Outlet } from "@tanstack/react-router"
+import { DatabasePicker } from "./DatabasePicker"
 
 export const Layout = () => {
   return (
@@ -16,34 +17,61 @@ export const Layout = () => {
         <Toolbar
           sx={{
             display: "flex",
-            gap: 2,
+            justifyContent: "space-between",
           }}
         >
-          <Typography
-            component={Link}
-            variant="h5"
-            fontWeight="700"
-            to="/"
-            sx={(theme) => ({
-              textDecoration: "none",
-              color: theme.palette.getContrastText(theme.palette.primary.main),
-              "&.active": {},
-            })}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "flex-end",
+              justifyContent: "flex-start",
+              gap: 2,
+              height: "100%",
+            }}
           >
-            wBialy
-          </Typography>
-          <Link to="/test">test</Link>
+            <Typography
+              component={Link}
+              variant="h5"
+              fontWeight="700"
+              to="/"
+              sx={(theme) => ({
+                textDecoration: "none",
+                color: theme.palette.getContrastText(
+                  theme.palette.primary.main
+                ),
+                "&.active": {},
+              })}
+            >
+              wBialy
+            </Typography>
+            <Typography
+              component={Link}
+              variant="body1"
+              to="/gastros"
+              sx={(theme) => ({
+                textDecoration: "none",
+                color: theme.palette.getContrastText(
+                  theme.palette.primary.main
+                ),
+                "&.active": {},
+              })}
+            >
+              Gastro
+            </Typography>
+          </Box>
+          <DatabasePicker />
         </Toolbar>
       </AppBar>
       <Box
-        sx={{
+        sx={(theme) => ({
           display: "flex",
           flexDirection: "column",
           flex: 1,
           flexGrow: 1,
           boxSizing: "border-box",
-          marginLeft: "58px",
-        }}
+          backgroundColor: theme.palette.background.default,
+          p: 2,
+        })}
       >
         <Outlet />
       </Box>

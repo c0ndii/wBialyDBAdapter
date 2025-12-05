@@ -11,6 +11,9 @@ dependencies:
   '@emotion/styled':
     specifier: ^11.14.1
     version: 11.14.1(@emotion/react@11.14.0)(@types/react@18.2.7)(react@18.2.0)
+  '@hookform/resolvers':
+    specifier: ^5.2.2
+    version: 5.2.2(react-hook-form@7.67.0)
   '@mui/icons-material':
     specifier: ^7.3.5
     version: 7.3.5(@mui/material@7.3.5)(@types/react@18.2.7)(react@18.2.0)
@@ -26,6 +29,12 @@ dependencies:
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
+  react-hook-form:
+    specifier: ^7.67.0
+    version: 7.67.0(react@18.2.0)
+  zod:
+    specifier: ^4.1.13
+    version: 4.1.13
 
 devDependencies:
   '@eslint/js':
@@ -675,6 +684,15 @@ packages:
       levn: 0.4.1
     dev: true
 
+  /@hookform/resolvers@5.2.2(react-hook-form@7.67.0):
+    resolution: {integrity: sha512-A/IxlMLShx3KjV/HeTcTfaMxdwy690+L/ZADoeaTltLx+CVuzkeVIPuybK3jrRfw7YZnmdKsVVHAlEPIAEUNlA==}
+    peerDependencies:
+      react-hook-form: ^7.55.0
+    dependencies:
+      '@standard-schema/utils': 0.3.0
+      react-hook-form: 7.67.0(react@18.2.0)
+    dev: false
+
   /@humanfs/core@0.19.1:
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
     engines: {node: '>=18.18.0'}
@@ -1070,6 +1088,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@standard-schema/utils@0.3.0:
+    resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+    dev: false
 
   /@tanstack/history@1.139.0:
     resolution: {integrity: sha512-l6wcxwDBeh/7Dhles23U1O8lp9kNJmAb2yNjekR6olZwCRNAVA8TCXlVCrueELyFlYZqvQkh0ofxnzG62A1Kkg==}
@@ -2798,6 +2820,15 @@ packages:
       react: 18.2.0
       scheduler: 0.23.2
 
+  /react-hook-form@7.67.0(react@18.2.0):
+    resolution: {integrity: sha512-E55EOwKJHHIT/I6J9DmQbCWToAYSw9nN5R57MZw9rMtjh+YQreMDxRLfdjfxQbiJ3/qbg3Z02wGzBX4M+5fMtQ==}
+    engines: {node: '>=18.0.0'}
+    peerDependencies:
+      react: ^16.8.0 || ^17 || ^18 || ^19
+    dependencies:
+      react: 18.2.0
+    dev: false
+
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -3429,4 +3460,3 @@ packages:
 
   /zod@4.1.13:
     resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
-    dev: true

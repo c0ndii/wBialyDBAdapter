@@ -1,55 +1,17 @@
+import type { Event } from "@/api/hooks/events"
+import type { Gastro } from "@/api/hooks/gastro"
+import EventIcon from "@mui/icons-material/Event"
+import FastfoodIcon from "@mui/icons-material/Fastfood"
 import { Box } from "@mui/material"
 import { Post } from "./Post"
 
-export type JobPost = {
-  id: number
-  title: string
-  description: string
-  tags: string[]
-  date: string
-  premium?: boolean
-}
-
-const posts: JobPost[] = [
-  {
-    id: 1,
-    title: "szukam pilarza",
-    description:
-      "Szukam pilarza z uprawnieniami na 1 dzień do wycinki sosen, sprzęt nie jest wymagany.",
-    tags: ["d", "u"],
-    date: "dodane: 2025-11-29 15:07:40",
-    premium: false,
-  },
-  {
-    id: 2,
-    title: "Sprzedawca",
-    description:
-      "Zatrudnię na okres przedświąteczny osobę z doświadczeniem w handlu do sklepu rybnego na ul. Dubois.",
-    tags: ["d", "u"],
-    date: "dodane: 2025-11-29 14:59:09",
-    premium: false,
-  },
-  {
-    id: 3,
-    title: "Pracownicy do sortowni i na magazyn",
-    description:
-      "Zatrudnimy pracowników na magazyn w Choroszczy. Potrzebujemy osób: do sortowania przesyłek kurierskich - praca na pół etatu dwuzmianowa...",
-    tags: ["d", "u"],
-    date: "dodane: 2025-11-29 12:24:58",
-    premium: false,
-  },
-  {
-    id: 4,
-    title: "zatrudnimy księgową",
-    description:
-      "OBOWIĄZKI: dekretowanie i księgowanie dokumentów, księgowanie wyciągów, kontrola i analiza rozrachunków...",
-    tags: ["PREMIUM", "min. 5000zł netto"],
-    date: "dodane: 2025-11-28 15:44:02",
-    premium: true,
-  },
-]
-
-export function PostList() {
+export function PostList({
+  events = [],
+  type,
+}: {
+  events?: Event[] | Gastro[]
+  type: "event" | "gastro"
+}) {
   return (
     <Box
       sx={{
@@ -61,17 +23,26 @@ export function PostList() {
         gap: 2,
       }}
     >
-      {posts.map((post) => (
-        <Post key={post.id}>
-          <Post.Title>{post.title}</Post.Title>
+      {events.map((event) => (
+        <Post key={event.id}>
+          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Post.Title link={`/${type}s/${event.id}`}>
+              {event.title}
+            </Post.Title>
+            {type === "event" ? <EventIcon /> : <FastfoodIcon />}
+          </Box>
 
-          <Post.Description>{post.description}</Post.Description>
+          <Post.Description>{event.description}</Post.Description>
 
           <Post.Separator />
 
           <Post.Footer
-            left={<Post.Tags tags={post.tags} />}
-            right={<Post.DateText>{post.date}</Post.DateText>}
+            left={<Post.Tags tags={event.tags.map((t) => t.name)} />}
+            right={
+              <Post.DateText>
+                {`dodane: ${new Date(event.addDate).toLocaleString("pl-PL")}`}
+              </Post.DateText>
+            }
           />
         </Post>
       ))}

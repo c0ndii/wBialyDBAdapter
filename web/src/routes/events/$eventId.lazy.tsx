@@ -1,6 +1,6 @@
-import { useCreateEvent, useEvents } from "@/api/hooks/events"
-import { PostList } from "@/components/PostList"
-import { eventSchema, type EventSchema } from "@/schema/events.schema"
+import { useDeleteEvent, useEvent, useUpdateEvent } from "@/api/hooks/events"
+import { PostDetails } from "@/components/PostDetails"
+import { editEventSchema, type EditEventSchema } from "@/schema/events.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Box,
@@ -11,42 +11,62 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material"
-import { createFileRoute } from "@tanstack/react-router"
-import { useState } from "react"
+import { createLazyFileRoute } from "@tanstack/react-router"
+import { useEffect, useState } from "react"
 import { useForm, type UseFormReturn } from "react-hook-form"
 
-export const Route = createFileRoute("/")({
-  component: HomeView,
+export const Route = createLazyFileRoute("/events/$eventId")({
+  component: GastroView,
 })
 
-function HomeView() {
+function GastroView() {
   const [open, setOpen] = useState(false)
-  const { data } = useEvents({
-    pageIndex: 0,
-    pageSize: 5,
-  })
+  const { eventId } = Route.useParams()
+  const { data } = useEvent(eventId)
+  const mutation = useDeleteEvent()
+  const { mutateAsync } = useUpdateEvent()
 
-  const { mutateAsync } = useCreateEvent()
-
-  const handleSubmit = (data: EventSchema) => {
-    mutateAsync(data)
+  const handleSubmit = (data: EditEventSchema) => {
+    mutateAsync({
+      id: data.id,
+      data: data,
+    })
     form.reset()
     handleClose()
   }
 
-  const form = useForm<EventSchema>({
+  const form = useForm<EditEventSchema>({
     defaultValues: {
-      title: "",
-      description: "",
-      author: "",
-      addDate: new Date(),
-      link: "",
-      place: "",
-      eventDate: new Date(),
+      id: eventId,
+      title: data?.data.title,
+      description: data?.data.description,
+      author: data?.data.author,
+      addDate: data?.data.addDate ? new Date(data.data.addDate) : new Date(),
+      link: data?.data.link,
+      place: data?.data.place,
+      eventDate: data?.data.eventDate
+        ? new Date(data.data.eventDate)
+        : new Date(),
       tags: [],
     },
-    resolver: zodResolver(eventSchema),
+    resolver: zodResolver(editEventSchema),
   })
+
+  useEffect(() => {
+    if (!data?.data) return
+
+    form.reset({
+      id: data.data.id,
+      title: data.data.title,
+      description: data.data.description,
+      author: data.data.author,
+      addDate: new Date(data.data.addDate),
+      link: data.data.link,
+      place: data.data.place,
+      eventDate: new Date(data.data.eventDate),
+      tags: [],
+    })
+  }, [data, form])
 
   const handleClickOpen = () => {
     setOpen(true)
@@ -56,14 +76,20 @@ function HomeView() {
     setOpen(false)
   }
 
+  const handleDelete = () => {
+    mutation.mutateAsync(eventId)
+  }
+
+  if (!data?.data) return null
+
+  if (!data?.data) return null
   return (
     <Box>
-      <Box>
-        <Button color="success" variant="outlined" onClick={handleClickOpen}>
-          + Event
-        </Button>
-      </Box>
-      <PostList events={data?.data} type="event" />
+      <PostDetails
+        data={data?.data}
+        onDelete={handleDelete}
+        onEdit={handleClickOpen}
+      />
       <Dialog
         open={open}
         onClose={handleClose}
@@ -74,9 +100,9 @@ function HomeView() {
           alignItems: "center",
         }}
       >
-        <DialogTitle>Dodaj</DialogTitle>
+        <DialogTitle>Edytuj</DialogTitle>
         <DialogContent>
-          <CreateForm formContext={form} onSubmit={handleSubmit} />
+          <EditForm formContext={form} onSubmit={handleSubmit} />
         </DialogContent>
         <DialogActions>
           <Button color="inherit" onClick={handleClose}>
@@ -88,7 +114,7 @@ function HomeView() {
             color="success"
             autoFocus
           >
-            Create
+            Edit
           </Button>
         </DialogActions>
       </Dialog>
@@ -97,11 +123,11 @@ function HomeView() {
 }
 
 type Props = {
-  onSubmit: (value: EventSchema) => void
-  formContext: UseFormReturn<EventSchema>
+  onSubmit: (value: EditEventSchema) => void
+  formContext: UseFormReturn<EditEventSchema>
 }
 
-const CreateForm = ({ onSubmit, formContext }: Props) => {
+const EditForm = ({ onSubmit, formContext }: Props) => {
   const {
     register,
     handleSubmit,
@@ -121,6 +147,8 @@ const CreateForm = ({ onSubmit, formContext }: Props) => {
       }}
       onSubmit={handleSubmit(onSubmit)}
     >
+      <input type="hidden" {...register("id")} />
+
       <TextField
         label="Tytuł"
         {...register("title")}

@@ -1,6 +1,6 @@
-import { useCreateEvent, useEvents } from "@/api/hooks/events"
+import { useCreateGastro, useGastros } from "@/api/hooks/gastro"
 import { PostList } from "@/components/PostList"
-import { eventSchema, type EventSchema } from "@/schema/events.schema"
+import { type GastroSchema, gastroSchema } from "@/schema/gastro.schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Box,
@@ -11,30 +11,30 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material"
-import { createFileRoute } from "@tanstack/react-router"
+import { createLazyFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
 import { useForm, type UseFormReturn } from "react-hook-form"
 
-export const Route = createFileRoute("/")({
-  component: HomeView,
+export const Route = createLazyFileRoute("/gastros/")({
+  component: GastroView,
 })
 
-function HomeView() {
+function GastroView() {
   const [open, setOpen] = useState(false)
-  const { data } = useEvents({
+  const { data } = useGastros({
     pageIndex: 0,
     pageSize: 5,
   })
 
-  const { mutateAsync } = useCreateEvent()
+  const { mutateAsync } = useCreateGastro()
 
-  const handleSubmit = (data: EventSchema) => {
+  const handleSubmit = (data: GastroSchema) => {
     mutateAsync(data)
     form.reset()
     handleClose()
   }
 
-  const form = useForm<EventSchema>({
+  const form = useForm<GastroSchema>({
     defaultValues: {
       title: "",
       description: "",
@@ -42,10 +42,10 @@ function HomeView() {
       addDate: new Date(),
       link: "",
       place: "",
-      eventDate: new Date(),
+      day: new Date(),
       tags: [],
     },
-    resolver: zodResolver(eventSchema),
+    resolver: zodResolver(gastroSchema),
   })
 
   const handleClickOpen = () => {
@@ -60,10 +60,11 @@ function HomeView() {
     <Box>
       <Box>
         <Button color="success" variant="outlined" onClick={handleClickOpen}>
-          + Event
+          + Gastro
         </Button>
       </Box>
-      <PostList events={data?.data} type="event" />
+      <PostList events={data?.data} type="gastro" />
+
       <Dialog
         open={open}
         onClose={handleClose}
@@ -97,8 +98,8 @@ function HomeView() {
 }
 
 type Props = {
-  onSubmit: (value: EventSchema) => void
-  formContext: UseFormReturn<EventSchema>
+  onSubmit: (value: GastroSchema) => void
+  formContext: UseFormReturn<GastroSchema>
 }
 
 const CreateForm = ({ onSubmit, formContext }: Props) => {
@@ -162,11 +163,11 @@ const CreateForm = ({ onSubmit, formContext }: Props) => {
         type="date"
         label="Dzień"
         InputLabelProps={{ shrink: true }}
-        {...register("eventDate", {
+        {...register("day", {
           valueAsDate: true,
         })}
-        error={!!errors.eventDate}
-        helperText={errors.eventDate?.message}
+        error={!!errors.day}
+        helperText={errors.day?.message}
       />
 
       <input type="hidden" {...register("addDate", { valueAsDate: true })} />

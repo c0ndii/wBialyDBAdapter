@@ -2,6 +2,7 @@ import { queryClient } from "@/api/client"
 import { ThemeProvider } from "@mui/material"
 import { QueryClientProvider } from "@tanstack/react-query"
 import { createRouter, RouterProvider } from "@tanstack/react-router"
+import { DatabaseProvider } from "./context/DatabaseContext"
 import { routeTree } from "./routeTree.gen"
 import { light } from "./theme"
 
@@ -16,11 +17,13 @@ declare module "@tanstack/react-router" {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={light}>
-        <RouterProvider router={router} />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <DatabaseProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={light}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </DatabaseProvider>
   )
 }
 

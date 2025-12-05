@@ -7,7 +7,7 @@ export const DatabaseTypes = {
 export type DatabaseEnum = (typeof DatabaseTypes)[keyof typeof DatabaseTypes]
 
 export type BaseRequest = {
-  databaseType: DatabaseEnum
+  databaseType?: DatabaseEnum
 }
 
 export type EndpointRequest = BaseRequest & {
@@ -20,6 +20,21 @@ export type PostsRequest<T> = BaseRequest & {
 }
 
 export type EndpointResponse<T> = {
-  data: T[]
+  data: T
   totalCount: number
+}
+
+export interface Tag {
+  id: string
+  name: string
+}
+
+export interface Post {
+  id: string
+  title: string
+  description: string
+  author: string
+  addDate: Date
+  link: string
+  place: string
 }

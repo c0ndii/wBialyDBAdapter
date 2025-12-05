@@ -13,54 +13,71 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 
-const TestLazyRouteImport = createFileRoute('/test')()
+const GastrosIndexLazyRouteImport = createFileRoute('/gastros/')()
+const GastrosGastroIdLazyRouteImport = createFileRoute('/gastros/$gastroId')()
+const EventsEventIdLazyRouteImport = createFileRoute('/events/$eventId')()
 
-const TestLazyRoute = TestLazyRouteImport.update({
-  id: '/test',
-  path: '/test',
-  getParentRoute: () => rootRouteImport,
-} as any).lazy(() => import('./routes/test.lazy').then((d) => d.Route))
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GastrosIndexLazyRoute = GastrosIndexLazyRouteImport.update({
+  id: '/gastros/',
+  path: '/gastros/',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/gastros/index.lazy').then((d) => d.Route))
+const GastrosGastroIdLazyRoute = GastrosGastroIdLazyRouteImport.update({
+  id: '/gastros/$gastroId',
+  path: '/gastros/$gastroId',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/gastros/$gastroId.lazy').then((d) => d.Route),
+)
+const EventsEventIdLazyRoute = EventsEventIdLazyRouteImport.update({
+  id: '/events/$eventId',
+  path: '/events/$eventId',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/events/$eventId.lazy').then((d) => d.Route),
+)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/test': typeof TestLazyRoute
+  '/events/$eventId': typeof EventsEventIdLazyRoute
+  '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
+  '/gastros': typeof GastrosIndexLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/test': typeof TestLazyRoute
+  '/events/$eventId': typeof EventsEventIdLazyRoute
+  '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
+  '/gastros': typeof GastrosIndexLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/test': typeof TestLazyRoute
+  '/events/$eventId': typeof EventsEventIdLazyRoute
+  '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
+  '/gastros/': typeof GastrosIndexLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/test'
+  fullPaths: '/' | '/events/$eventId' | '/gastros/$gastroId' | '/gastros'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/test'
-  id: '__root__' | '/' | '/test'
+  to: '/' | '/events/$eventId' | '/gastros/$gastroId' | '/gastros'
+  id: '__root__' | '/' | '/events/$eventId' | '/gastros/$gastroId' | '/gastros/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  TestLazyRoute: typeof TestLazyRoute
+  EventsEventIdLazyRoute: typeof EventsEventIdLazyRoute
+  GastrosGastroIdLazyRoute: typeof GastrosGastroIdLazyRoute
+  GastrosIndexLazyRoute: typeof GastrosIndexLazyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/test': {
-      id: '/test'
-      path: '/test'
-      fullPath: '/test'
-      preLoaderRoute: typeof TestLazyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -68,12 +85,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/gastros/': {
+      id: '/gastros/'
+      path: '/gastros'
+      fullPath: '/gastros'
+      preLoaderRoute: typeof GastrosIndexLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gastros/$gastroId': {
+      id: '/gastros/$gastroId'
+      path: '/gastros/$gastroId'
+      fullPath: '/gastros/$gastroId'
+      preLoaderRoute: typeof GastrosGastroIdLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events/$eventId': {
+      id: '/events/$eventId'
+      path: '/events/$eventId'
+      fullPath: '/events/$eventId'
+      preLoaderRoute: typeof EventsEventIdLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  TestLazyRoute: TestLazyRoute,
+  EventsEventIdLazyRoute: EventsEventIdLazyRoute,
+  GastrosGastroIdLazyRoute: GastrosGastroIdLazyRoute,
+  GastrosIndexLazyRoute: GastrosIndexLazyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
