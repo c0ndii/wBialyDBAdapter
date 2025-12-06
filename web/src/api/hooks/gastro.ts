@@ -1,5 +1,5 @@
 import { useDatabase } from "@/hooks/useDatabase"
-import type { GastroSchema } from "@/schema/gastro.schema"
+import type { EditGastroSchema, GastroSchema } from "@/schema/gastro.schema"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
 import type { EndpointRequest, EndpointResponse, Post, Tag } from "../types"
@@ -100,7 +100,7 @@ export const useCreateGastro = () => {
       const res = await fetch("/api/gastro", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: { ...data, databaseType } }),
+        body: JSON.stringify({ data: { ...data }, databaseType }),
       })
       if (!res.ok) {
         const text = await res.text()
@@ -121,7 +121,7 @@ export const useUpdateGastro = () => {
   return useMutation<
     EndpointResponse<Gastro[]>,
     unknown,
-    { id: string; data: Gastro },
+    { id: string; data: EditGastroSchema },
     unknown
   >({
     mutationKey: ["updateGastro", databaseType],
@@ -129,7 +129,7 @@ export const useUpdateGastro = () => {
       const res = await fetch(`/api/gastro/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: { ...data, databaseType } }),
+        body: JSON.stringify({ data: { ...data }, databaseType }),
       })
       if (!res.ok) {
         const text = await res.text()

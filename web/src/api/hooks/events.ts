@@ -99,7 +99,7 @@ export const useCreateEvent = () => {
       const res = await fetch("/api/event", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: { ...data, databaseType } }),
+        body: JSON.stringify({ data: { ...data }, databaseType }),
       })
 
       if (!res.ok) {
@@ -130,7 +130,7 @@ export const useUpdateEvent = () => {
       const res = await fetch(`/api/event/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data: { ...data, databaseType } }),
+        body: JSON.stringify({ data: { ...data }, databaseType }),
       })
 
       if (!res.ok) {

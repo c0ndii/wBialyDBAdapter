@@ -5,6 +5,7 @@ using wBialyDBAdapter.Config;
 using wBialyDBAdapter.Database.NoSQL;
 using wBialyDBAdapter.Database.NoSQL.Entities;
 using wBialyDBAdapter.Database.ObjectRelational;
+using wBialyDBAdapter.Database.Relational.Helpers;
 using wBialyDBAdapter.Mapping;
 using wBialyDBAdapter.Mapping.Implementation;
 using wBialyDBAdapter.Model;
@@ -76,6 +77,23 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ORDB>();
+    if (db != null)
+    {
+        db.Database.Migrate();
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var conn = scope.ServiceProvider.GetRequiredService<IOptions<RelationalDBSettings>>();
+    if (conn != null) {
+        await RDBHelper.EnsureRelationalDatabaseInitializedAsync(conn.Value.ConnectionString);
+    }
 }
 
 app.UseHttpsRedirection();

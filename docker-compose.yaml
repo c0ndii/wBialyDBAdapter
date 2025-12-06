@@ -1,6 +1,30 @@
 version: "3.8"
 
 services:
+  relational-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: relational-db
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Strong!Pass123"
+    ports:
+      - "1433:1433"
+    volumes:
+      - relational-data:/var/opt/mssql
+
+  object-relational-db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: objectrelational-db
+    restart: always
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Strong!Pass123"
+    ports:
+      - "1434:1433"
+    volumes:
+      - objectrelational-data:/var/opt/mssql
+
   mongo:
     image: mongo:7.0
     container_name: mongodb
@@ -14,4 +38,6 @@ services:
       - mongo-data:/data/db
 
 volumes:
+  relational-data:
+  objectrelational-data:
   mongo-data:
