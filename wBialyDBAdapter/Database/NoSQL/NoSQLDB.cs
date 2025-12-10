@@ -17,6 +17,7 @@ namespace wBialyDBAdapter.Database.NoSQL
 
         public IMongoCollection<Event> Events => _database.GetCollection<Event>("Events");
         public IMongoCollection<Gastro> Gastros => _database.GetCollection<Gastro>("Gastros");
+        public IMongoCollection<Entities.Tag> Tags => _database.GetCollection<Entities.Tag>("Tags");
     }
 
 }

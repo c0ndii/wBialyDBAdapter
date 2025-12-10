@@ -32,6 +32,20 @@ namespace wBialyDBAdapter.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EventTags",
+                columns: table => new
+                {
+                    TagID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EventID = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EventTags", x => x.TagID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Gastros",
                 columns: table => new
                 {
@@ -50,21 +64,7 @@ namespace wBialyDBAdapter.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tag_Event",
-                columns: table => new
-                {
-                    TagID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EventID = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tag_Event", x => x.TagID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tag_Gastro",
+                name: "GastroTags",
                 columns: table => new
                 {
                     TagID = table.Column<int>(type: "int", nullable: false)
@@ -74,11 +74,11 @@ namespace wBialyDBAdapter.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tag_Gastro", x => x.TagID);
+                    table.PrimaryKey("PK_GastroTags", x => x.TagID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EventTag_Event",
+                name: "EventTagsJoin",
                 columns: table => new
                 {
                     EventTagsTagID = table.Column<int>(type: "int", nullable: false),
@@ -86,23 +86,23 @@ namespace wBialyDBAdapter.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EventTag_Event", x => new { x.EventTagsTagID, x.EventsPostId });
+                    table.PrimaryKey("PK_EventTagsJoin", x => new { x.EventTagsTagID, x.EventsPostId });
                     table.ForeignKey(
-                        name: "FK_EventTag_Event_Events_EventsPostId",
+                        name: "FK_EventTagsJoin_EventTags_EventTagsTagID",
+                        column: x => x.EventTagsTagID,
+                        principalTable: "EventTags",
+                        principalColumn: "TagID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EventTagsJoin_Events_EventsPostId",
                         column: x => x.EventsPostId,
                         principalTable: "Events",
                         principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EventTag_Event_Tag_Event_EventTagsTagID",
-                        column: x => x.EventTagsTagID,
-                        principalTable: "Tag_Event",
-                        principalColumn: "TagID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "GastroTag_Gastro",
+                name: "GastroTagsJoin",
                 columns: table => new
                 {
                     GastroTagsTagID = table.Column<int>(type: "int", nullable: false),
@@ -110,19 +110,28 @@ namespace wBialyDBAdapter.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GastroTag_Gastro", x => new { x.GastroTagsTagID, x.GastrosPostId });
+                    table.PrimaryKey("PK_GastroTagsJoin", x => new { x.GastroTagsTagID, x.GastrosPostId });
                     table.ForeignKey(
-                        name: "FK_GastroTag_Gastro_Gastros_GastrosPostId",
+                        name: "FK_GastroTagsJoin_GastroTags_GastroTagsTagID",
+                        column: x => x.GastroTagsTagID,
+                        principalTable: "GastroTags",
+                        principalColumn: "TagID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GastroTagsJoin_Gastros_GastrosPostId",
                         column: x => x.GastrosPostId,
                         principalTable: "Gastros",
                         principalColumn: "PostId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_GastroTag_Gastro_Tag_Gastro_GastroTagsTagID",
-                        column: x => x.GastroTagsTagID,
-                        principalTable: "Tag_Gastro",
-                        principalColumn: "TagID",
-                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "EventTags",
+                columns: new[] { "TagID", "EventID", "Name" },
+                values: new object[,]
+                {
+                    { 1, 0, "Music" },
+                    { 2, 0, "Sport" }
                 });
 
             migrationBuilder.InsertData(
@@ -135,6 +144,15 @@ namespace wBialyDBAdapter.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "GastroTags",
+                columns: new[] { "TagID", "GastroID", "Name" },
+                values: new object[,]
+                {
+                    { 3, 0, "Pizza" },
+                    { 4, 0, "Vegan" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Gastros",
                 columns: new[] { "PostId", "AddDate", "Author", "Description", "Link", "Place", "Title" },
                 values: new object[,]
@@ -144,25 +162,7 @@ namespace wBialyDBAdapter.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Tag_Event",
-                columns: new[] { "TagID", "EventID", "Name" },
-                values: new object[,]
-                {
-                    { 1, 0, "Music" },
-                    { 2, 0, "Sport" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Tag_Gastro",
-                columns: new[] { "TagID", "GastroID", "Name" },
-                values: new object[,]
-                {
-                    { 3, 0, "Pizza" },
-                    { 4, 0, "Vegan" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "EventTag_Event",
+                table: "EventTagsJoin",
                 columns: new[] { "EventTagsTagID", "EventsPostId" },
                 values: new object[,]
                 {
@@ -171,7 +171,7 @@ namespace wBialyDBAdapter.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "GastroTag_Gastro",
+                table: "GastroTagsJoin",
                 columns: new[] { "GastroTagsTagID", "GastrosPostId" },
                 values: new object[,]
                 {
@@ -180,13 +180,13 @@ namespace wBialyDBAdapter.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_EventTag_Event_EventsPostId",
-                table: "EventTag_Event",
+                name: "IX_EventTagsJoin_EventsPostId",
+                table: "EventTagsJoin",
                 column: "EventsPostId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GastroTag_Gastro_GastrosPostId",
-                table: "GastroTag_Gastro",
+                name: "IX_GastroTagsJoin_GastrosPostId",
+                table: "GastroTagsJoin",
                 column: "GastrosPostId");
         }
 
@@ -194,22 +194,22 @@ namespace wBialyDBAdapter.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "EventTag_Event");
+                name: "EventTagsJoin");
 
             migrationBuilder.DropTable(
-                name: "GastroTag_Gastro");
+                name: "GastroTagsJoin");
+
+            migrationBuilder.DropTable(
+                name: "EventTags");
 
             migrationBuilder.DropTable(
                 name: "Events");
 
             migrationBuilder.DropTable(
-                name: "Tag_Event");
+                name: "GastroTags");
 
             migrationBuilder.DropTable(
                 name: "Gastros");
-
-            migrationBuilder.DropTable(
-                name: "Tag_Gastro");
         }
     }
 }

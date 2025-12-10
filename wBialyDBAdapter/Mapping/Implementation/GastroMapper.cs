@@ -60,7 +60,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                Tags = src.Tags.Select(x => new Database.NoSQL.Entities.Tag { Name = x }).ToList()
+                Tags = new List<Database.NoSQL.Entities.Tag>()
             };
 
         public Database.Relational.Entities.Gastro ToRelational(UnifiedGastroModel src)
@@ -74,7 +74,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                GastroTags = src.Tags.Select(x => new Database.Relational.Entities.Tag_Gastro { Name = x }).ToList()
+                GastroTags = new List<Database.Relational.Entities.Tag_Gastro>()
             };
 
         public Database.ObjectRelational.Entities.Gastro ToObjectRelational(UnifiedGastroModel src)
@@ -88,7 +88,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                GastroTags = src.Tags.Select(x => new Database.ObjectRelational.Entities.Tag_Gastro { Name = x }).ToList()
+                GastroTags = new List<Database.ObjectRelational.Entities.Tag_Gastro>()
             };
     }
 

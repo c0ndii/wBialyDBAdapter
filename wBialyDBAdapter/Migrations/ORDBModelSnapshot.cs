@@ -34,7 +34,7 @@ namespace wBialyDBAdapter.Migrations
 
                     b.HasIndex("EventsPostId");
 
-                    b.ToTable("EventTag_Event");
+                    b.ToTable("EventTagsJoin", (string)null);
 
                     b.HasData(
                         new
@@ -61,7 +61,7 @@ namespace wBialyDBAdapter.Migrations
 
                     b.HasIndex("GastrosPostId");
 
-                    b.ToTable("GastroTag_Gastro");
+                    b.ToTable("GastroTagsJoin", (string)null);
 
                     b.HasData(
                         new
@@ -209,7 +209,7 @@ namespace wBialyDBAdapter.Migrations
 
                     b.HasKey("TagID");
 
-                    b.ToTable("Tag_Event");
+                    b.ToTable("EventTags");
 
                     b.HasData(
                         new
@@ -243,7 +243,7 @@ namespace wBialyDBAdapter.Migrations
 
                     b.HasKey("TagID");
 
-                    b.ToTable("Tag_Gastro");
+                    b.ToTable("GastroTags");
 
                     b.HasData(
                         new
