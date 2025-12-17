@@ -12,7 +12,7 @@ using wBialyDBAdapter.Database.ObjectRelational;
 namespace wBialyDBAdapter.Migrations
 {
     [DbContext(typeof(ORDB))]
-    [Migration("20251210223020_init")]
+    [Migration("20251217201341_init")]
     partial class init
     {
         /// <inheritdoc />

@@ -1,4 +1,6 @@
 ﻿using wBialyDBAdapter.Model;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace wBialyDBAdapter.Mapping.Implementation
 {
@@ -15,7 +17,11 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                Tags = src.Tags.Select(t => t.Name).ToList()
+                Tags = src.Tags?.Select(t => new UnifiedTagModel
+                {
+                    Id = t.Id.ToString(),
+                    Name = t.Name
+                }).ToList() ?? new List<UnifiedTagModel>()
             };
 
         public UnifiedGastroModel FromRelational(Database.Relational.Entities.Gastro src)
@@ -29,7 +35,11 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                Tags = src.GastroTags.Select(t => t.Name).ToList()
+                Tags = src.GastroTags?.Select(t => new UnifiedTagModel
+                {
+                    Id = t.TagID.ToString(),
+                    Name = t.Name
+                }).ToList() ?? new List<UnifiedTagModel>()
             };
 
         public UnifiedGastroModel FromObjectRelational(Database.ObjectRelational.Entities.Gastro src)
@@ -43,7 +53,11 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                Tags = src.GastroTags.Select(t => t.Name).ToList()
+                Tags = src.GastroTags?.Select(t => new UnifiedTagModel
+                {
+                    Id = t.TagID.ToString(),
+                    Name = t.Name
+                }).ToList() ?? new List<UnifiedTagModel>()
             };
 
 
@@ -60,7 +74,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                Tags = new List<Database.NoSQL.Entities.Tag>()
+                Tags = src.Tags?.Select(t => new Database.NoSQL.Entities.Tag { Id = t.Id, Name = t.Name }).ToList() ?? new List<Database.NoSQL.Entities.Tag>()
             };
 
         public Database.Relational.Entities.Gastro ToRelational(UnifiedGastroModel src)
@@ -74,7 +88,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                GastroTags = new List<Database.Relational.Entities.Tag_Gastro>()
+                GastroTags = src.Tags?.Select(t => new Database.Relational.Entities.Tag_Gastro { Name = t.Name }).ToList() ?? new List<Database.Relational.Entities.Tag_Gastro>()
             };
 
         public Database.ObjectRelational.Entities.Gastro ToObjectRelational(UnifiedGastroModel src)
@@ -88,8 +102,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 Day = src.Day,
-                GastroTags = new List<Database.ObjectRelational.Entities.Tag_Gastro>()
+                GastroTags = src.Tags?.Select(t => new Database.ObjectRelational.Entities.Tag_Gastro { Name = t.Name }).ToList() ?? new List<Database.ObjectRelational.Entities.Tag_Gastro>()
             };
     }
-
 }

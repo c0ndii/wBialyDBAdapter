@@ -1,4 +1,6 @@
 ﻿using wBialyDBAdapter.Model;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace wBialyDBAdapter.Mapping.Implementation
 {
@@ -15,7 +17,11 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 EventDate = src.EventDate,
-                Tags = src.Tags.Select(t => t.Name).ToList()
+                Tags = src.Tags?.Select(t => new UnifiedTagModel
+                {
+                    Id = t.Id.ToString(),
+                    Name = t.Name
+                }).ToList() ?? new List<UnifiedTagModel>()
             };
 
         public UnifiedEventModel FromRelational(Database.Relational.Entities.Event src)
@@ -29,7 +35,11 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 EventDate = src.EventDate,
-                Tags = src.EventTags.Select(t => t.Name).ToList()
+                Tags = src.EventTags?.Select(t => new UnifiedTagModel
+                {
+                    Id = t.TagID.ToString(),
+                    Name = t.Name
+                }).ToList() ?? new List<UnifiedTagModel>()
             };
 
         public UnifiedEventModel FromObjectRelational(Database.ObjectRelational.Entities.Event src)
@@ -43,7 +53,11 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 EventDate = src.EventDate,
-                Tags = src.EventTags.Select(t => t.Name).ToList()
+                Tags = src.EventTags?.Select(t => new UnifiedTagModel
+                {
+                    Id = t.TagID.ToString(),
+                    Name = t.Name
+                }).ToList() ?? new List<UnifiedTagModel>()
             };
 
 
@@ -60,7 +74,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 EventDate = src.EventDate,
-                Tags = new List<Database.NoSQL.Entities.Tag>()
+                Tags = src.Tags?.Select(t => new Database.NoSQL.Entities.Tag { Id = t.Id, Name = t.Name }).ToList() ?? new List<Database.NoSQL.Entities.Tag>()
             };
 
         public Database.Relational.Entities.Event ToRelational(UnifiedEventModel src)
@@ -74,7 +88,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 EventDate = src.EventDate,
-                EventTags = new List<Database.Relational.Entities.Tag_Event>()
+                EventTags = src.Tags?.Select(t => new Database.Relational.Entities.Tag_Event { Name = t.Name }).ToList() ?? new List<Database.Relational.Entities.Tag_Event>()
             };
 
         public Database.ObjectRelational.Entities.Event ToObjectRelational(UnifiedEventModel src)
@@ -88,8 +102,7 @@ namespace wBialyDBAdapter.Mapping.Implementation
                 Place = src.Place,
                 Link = src.Link,
                 EventDate = src.EventDate,
-                EventTags = new List<Database.ObjectRelational.Entities.Tag_Event>()
+                EventTags = src.Tags?.Select(t => new Database.ObjectRelational.Entities.Tag_Event { Name = t.Name }).ToList() ?? new List<Database.ObjectRelational.Entities.Tag_Event>()
             };
     }
-
 }

@@ -1,14 +1,3 @@
-IF OBJECT_ID('dbo.Tags', 'U') IS NULL
-BEGIN
-    CREATE TABLE Tags (
-        TagID INT IDENTITY(1,1) PRIMARY KEY,
-        Name NVARCHAR(200) NOT NULL,
-        EventID INT NULL,
-        GastroID INT NULL
-    );
-END
-GO
-
 IF OBJECT_ID('dbo.Events', 'U') IS NULL
 BEGIN
     CREATE TABLE Events (
@@ -39,26 +28,46 @@ BEGIN
 END
 GO
 
-IF OBJECT_ID('dbo.Event_Tag', 'U') IS NULL
+IF OBJECT_ID('dbo.Tag_Event', 'U') IS NULL
 BEGIN
-    CREATE TABLE Event_Tag (
-        EventId INT NOT NULL,
-        TagId INT NOT NULL,
-        PRIMARY KEY (EventId, TagId),
-        FOREIGN KEY (EventId) REFERENCES Events(PostId) ON DELETE CASCADE,
-        FOREIGN KEY (TagId) REFERENCES Tags(TagID) ON DELETE CASCADE
+    CREATE TABLE Tag_Event (
+        TagID INT IDENTITY(1,1) PRIMARY KEY,
+        Name NVARCHAR(200) NOT NULL,
+        Description NVARCHAR(MAX) NULL
     );
 END
 GO
 
-IF OBJECT_ID('dbo.Gastro_Tag', 'U') IS NULL
+IF OBJECT_ID('dbo.Tag_Gastro', 'U') IS NULL
 BEGIN
-    CREATE TABLE Gastro_Tag (
+    CREATE TABLE Tag_Gastro (
+        TagID INT IDENTITY(1,1) PRIMARY KEY,
+        Name NVARCHAR(200) NOT NULL,
+        Description NVARCHAR(MAX) NULL
+    );
+END
+GO
+
+IF OBJECT_ID('dbo.Event_Tag_Join', 'U') IS NULL
+BEGIN
+    CREATE TABLE Event_Tag_Join (
+        EventId INT NOT NULL,
+        TagId INT NOT NULL,
+        PRIMARY KEY (EventId, TagId),
+        FOREIGN KEY (EventId) REFERENCES Events(PostId) ON DELETE CASCADE,
+        FOREIGN KEY (TagId) REFERENCES Tag_Event(TagID) ON DELETE CASCADE
+    );
+END
+GO
+
+IF OBJECT_ID('dbo.Gastro_Tag_Join', 'U') IS NULL
+BEGIN
+    CREATE TABLE Gastro_Tag_Join (
         GastroId INT NOT NULL,
         TagId INT NOT NULL,
         PRIMARY KEY (GastroId, TagId),
         FOREIGN KEY (GastroId) REFERENCES Gastro(PostId) ON DELETE CASCADE,
-        FOREIGN KEY (TagId) REFERENCES Tags(TagID) ON DELETE CASCADE
+        FOREIGN KEY (TagId) REFERENCES Tag_Gastro(TagID) ON DELETE CASCADE
     );
 END
 GO

@@ -1,19 +1,28 @@
 import { useDeleteGastro, useGastro, useUpdateGastro } from "@/api/hooks/gastro"
+import { useTags } from "@/api/hooks/tags"
 import { PostDetails } from "@/components/PostDetails"
 import { editGastroSchema, type EditGastroSchema } from "@/schema/gastro.schema"
+import { getStyles } from "@/utils/getStyles"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
   Box,
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
   TextField,
+  useTheme,
 } from "@mui/material"
 import { createLazyFileRoute } from "@tanstack/react-router"
 import { useEffect, useState } from "react"
-import { useForm, type UseFormReturn } from "react-hook-form"
+import { Controller, useForm, type UseFormReturn } from "react-hook-form"
 
 export const Route = createLazyFileRoute("/gastros/$gastroId")({
   component: GastroView,
@@ -38,13 +47,13 @@ function GastroView() {
   const form = useForm<EditGastroSchema>({
     defaultValues: {
       id: gastroId,
-      title: data?.data.title,
-      description: data?.data.description,
-      author: data?.data.author,
-      addDate: data?.data.addDate ? new Date(data.data.addDate) : new Date(),
-      link: data?.data.link,
-      place: data?.data.place,
-      day: data?.data.day ? new Date(data.data.day) : new Date(),
+      title: "",
+      description: "",
+      author: "",
+      addDate: new Date(),
+      link: "",
+      place: "",
+      day: new Date(),
       tags: [],
     },
     resolver: zodResolver(editGastroSchema),
@@ -62,7 +71,7 @@ function GastroView() {
       link: data.data.link,
       place: data.data.place,
       day: new Date(data.data.day),
-      tags: [],
+      tags: data.data.tags || [],
     })
   }, [data, form])
 
@@ -124,6 +133,11 @@ type Props = {
 }
 
 const EditForm = ({ onSubmit, formContext }: Props) => {
+  const { data } = useTags({
+    pageIndex: 0,
+    pageSize: 25,
+  })
+  const theme = useTheme()
   const {
     register,
     handleSubmit,
@@ -193,14 +207,59 @@ const EditForm = ({ onSubmit, formContext }: Props) => {
         helperText={errors.day?.message}
       />
 
-      <input type="hidden" {...register("addDate", { valueAsDate: true })} />
-
-      <input
-        type="hidden"
-        {...register("tags", {
-          value: [],
-        })}
+      <Controller
+        name="tags"
+        control={formContext.control}
+        render={({ field }) => (
+          <FormControl fullWidth>
+            <InputLabel id="tags-label">Tagi</InputLabel>
+            <Select
+              labelId="tags-label"
+              multiple
+              value={
+                Array.isArray(field.value) && field.value.length > 0
+                  ? field.value.map((tag) => tag.id)
+                  : []
+              }
+              onChange={(e) => {
+                const selectedIds = e.target.value as string[]
+                const selectedTags =
+                  data?.data.filter((tag) => selectedIds.includes(tag.id)) || []
+                field.onChange(selectedTags)
+              }}
+              input={<OutlinedInput label="Tagi" />}
+              renderValue={(selected: string[]) => (
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+                  {selected.map((tagId) => {
+                    const tag = data?.data.find((t) => t.id === tagId)
+                    return tag ? <Chip key={tagId} label={tag.name} /> : null
+                  })}
+                </Box>
+              )}
+              MenuProps={{
+                PaperProps: {
+                  style: {
+                    maxHeight: 8 * 4.5 + 48,
+                    width: 250,
+                  },
+                },
+              }}
+            >
+              {data?.data.map((tag) => (
+                <MenuItem
+                  key={tag.id}
+                  value={tag.id}
+                  style={getStyles(tag, data.data, theme)}
+                >
+                  {tag.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )}
       />
+
+      <input type="hidden" {...register("addDate", { valueAsDate: true })} />
     </Box>
   )
 }

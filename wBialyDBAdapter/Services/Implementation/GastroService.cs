@@ -68,77 +68,25 @@ namespace wBialyDBAdapter.Services.Implementation
             if (request.Data == null)
                 return new EndpointResponse<IReadOnlyList<UnifiedGastroModel>> { Data = Array.Empty<UnifiedGastroModel>() };
 
+            var unifiedTags = request.Data.Tags ?? new List<UnifiedTagModel>();
+
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
                     var noSqlEntity = _mapper.ToNoSql(request.Data);
-
-                    noSqlEntity.Tags = new List<NoSql.Tag>();
-
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagId in request.Data.TagIds)
-                        {
-                            var existingTag = await _mongoTagRepo.GetByKeyAsync(tagId);
-                            if (existingTag != null)
-                            {
-                                noSqlEntity.Tags.Add(new NoSql.Tag
-                                {
-                                    Id = existingTag.Id,
-                                    Name = existingTag.Name
-                                });
-                            }
-                        }
-                    }
+                    noSqlEntity.Tags = unifiedTags.Select(t => new NoSql.Tag { Id = t.Id, Name = t.Name }).ToList();
                     await _mongoRepo.AddAsync(noSqlEntity);
                     break;
 
                 case DatabaseType.Relational:
                     var relEntity = _mapper.ToRelational(request.Data);
-
-                    relEntity.GastroTags = new List<Rel.Tag_Gastro>();
-
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagIdStr in request.Data.TagIds)
-                        {
-                            if (int.TryParse(tagIdStr, out int tagId))
-                            {
-                                var existingTag = await _relTagRepo.GetAsync(tagId);
-                                if (existingTag != null)
-                                {
-                                    relEntity.GastroTags.Add(new Rel.Tag_Gastro
-                                    {
-                                        Name = existingTag.Name
-                                    });
-                                }
-                            }
-                        }
-                    }
+                    relEntity.GastroTags = unifiedTags.Select(t => new Rel.Tag_Gastro { Name = t.Name }).ToList();
                     await _relRepo.CreateAsync(relEntity);
                     break;
 
                 case DatabaseType.ObjectRelational:
                     var objEntity = _mapper.ToObjectRelational(request.Data);
-                    objEntity.GastroTags = new List<Obj.Tag_Gastro>();
-
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagIdStr in request.Data.TagIds)
-                        {
-                            if (int.TryParse(tagIdStr, out int tagId))
-                            {
-                                var existingTag = await _objTagRepo.GetAsync(tagId);
-                                if (existingTag != null)
-                                {
-                                    objEntity.GastroTags.Add(new Obj.Tag_Gastro
-                                    {
-                                        Name = existingTag.Name
-                                    });
-                                }
-                            }
-                        }
-                    }
+                    objEntity.GastroTags = unifiedTags.Select(t => new Obj.Tag_Gastro { Name = t.Name }).ToList();
                     await _objRepo.CreateAsync(objEntity);
                     break;
             }
@@ -151,31 +99,25 @@ namespace wBialyDBAdapter.Services.Implementation
             if (request.Data == null)
                 return new EndpointResponse<IReadOnlyList<UnifiedGastroModel>> { Data = Array.Empty<UnifiedGastroModel>() };
 
+            var unifiedTags = request.Data.Tags ?? new List<UnifiedTagModel>();
 
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
                     var noSqlEntity = _mapper.ToNoSql(request.Data);
-                    if (request.Data.TagIds != null)
-                    {
-                        noSqlEntity.Tags = new List<NoSql.Tag>();
-                        foreach (var tagId in request.Data.TagIds)
-                        {
-                            var t = await _mongoTagRepo.GetByKeyAsync(tagId);
-                            if (t != null) noSqlEntity.Tags.Add(new NoSql.Tag { Id = t.Id, Name = t.Name });
-                        }
-                    }
+                    noSqlEntity.Tags = unifiedTags.Select(t => new NoSql.Tag { Id = t.Id, Name = t.Name }).ToList();
                     await _mongoRepo.UpdateAsync(id, noSqlEntity);
                     break;
 
                 case DatabaseType.Relational:
                     var relEntity = _mapper.ToRelational(request.Data);
-
+                    relEntity.GastroTags = unifiedTags.Select(t => new Rel.Tag_Gastro { Name = t.Name }).ToList();
                     await _relRepo.UpdateAsync(relEntity);
                     break;
 
                 case DatabaseType.ObjectRelational:
                     var objEntity = _mapper.ToObjectRelational(request.Data);
+                    objEntity.GastroTags = unifiedTags.Select(t => new Obj.Tag_Gastro { Name = t.Name }).ToList();
                     await _objRepo.UpdateAsync(int.Parse(id), objEntity);
                     break;
             }

@@ -28,7 +28,6 @@ namespace wBialyDBAdapter.Services.Implementation
             IBaseRepository<NoSql.Event> mongoRepo,
             IRelationalRepository<Rel.Event> relRepo,
             IObjectRelationalRepository<Obj.Event> objRepo,
-            // Wstrzykujemy repozytoria tagów
             IBaseRepository<NoSql.Tag> mongoTagRepo,
             IRelationalRepository<Rel.Tag_Event> relTagRepo,
             IObjectRelationalRepository<Obj.Tag_Event> objTagRepo)
@@ -76,76 +75,25 @@ namespace wBialyDBAdapter.Services.Implementation
             if (request.Data == null)
                 return new EndpointResponse<IReadOnlyList<UnifiedEventModel>> { Data = Array.Empty<UnifiedEventModel>() };
 
+            var unifiedTags = request.Data.Tags ?? new List<UnifiedTagModel>();
+
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
                     var noSqlEntity = _mapper.ToNoSql(request.Data);
-
-                    // Inicjalizacja listy tagów
-                    noSqlEntity.Tags = new List<NoSql.Tag>();
-
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagId in request.Data.TagIds)
-                        {
-                            var t = await _mongoTagRepo.GetByKeyAsync(tagId);
-                            if (t != null)
-                            {
-                                noSqlEntity.Tags.Add(new NoSql.Tag { Id = t.Id, Name = t.Name });
-                            }
-                        }
-                    }
+                    noSqlEntity.Tags = unifiedTags.Select(t => new NoSql.Tag { Id = t.Id, Name = t.Name }).ToList();
                     await _mongoRepo.AddAsync(noSqlEntity);
                     break;
 
                 case DatabaseType.Relational:
                     var relEntity = _mapper.ToRelational(request.Data);
-
-                    // Tworzymy listę pomocniczą (rozwiązanie problemu IEnumerable)
-                    var relTagsList = new List<Rel.Tag_Event>();
-
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagIdStr in request.Data.TagIds)
-                        {
-                            if (int.TryParse(tagIdStr, out int tagId))
-                            {
-                                var existingTag = await _relTagRepo.GetAsync(tagId);
-                                if (existingTag != null)
-                                {
-                                    relTagsList.Add(new Rel.Tag_Event { Name = existingTag.Name });
-                                }
-                            }
-                        }
-                    }
-                    // Przypisanie listy pomocniczej do encji
-                    relEntity.EventTags = relTagsList;
-
+                    relEntity.EventTags = unifiedTags.Select(t => new Rel.Tag_Event { Name = t.Name }).ToList();
                     await _relRepo.CreateAsync(relEntity);
                     break;
 
                 case DatabaseType.ObjectRelational:
                     var objEntity = _mapper.ToObjectRelational(request.Data);
-
-                    // Lista pomocnicza
-                    var objTagsList = new List<Obj.Tag_Event>();
-
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagIdStr in request.Data.TagIds)
-                        {
-                            if (int.TryParse(tagIdStr, out int tagId))
-                            {
-                                var existingTag = await _objTagRepo.GetAsync(tagId);
-                                if (existingTag != null)
-                                {
-                                    objTagsList.Add(new Obj.Tag_Event { Name = existingTag.Name });
-                                }
-                            }
-                        }
-                    }
-                    objEntity.EventTags = objTagsList;
-
+                    objEntity.EventTags = unifiedTags.Select(t => new Obj.Tag_Event { Name = t.Name }).ToList();
                     await _objRepo.CreateAsync(objEntity);
                     break;
             }
@@ -159,69 +107,25 @@ namespace wBialyDBAdapter.Services.Implementation
             if (request.Data == null)
                 return new EndpointResponse<IReadOnlyList<UnifiedEventModel>> { Data = Array.Empty<UnifiedEventModel>() };
 
+            var unifiedTags = request.Data.Tags ?? new List<UnifiedTagModel>();
+
             switch (request.DatabaseType)
             {
                 case DatabaseType.NoSQL:
                     var noSqlEntity = _mapper.ToNoSql(request.Data);
-
-                    noSqlEntity.Tags = new List<NoSql.Tag>();
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagId in request.Data.TagIds)
-                        {
-                            var t = await _mongoTagRepo.GetByKeyAsync(tagId);
-                            if (t != null)
-                            {
-                                noSqlEntity.Tags.Add(new NoSql.Tag { Id = t.Id, Name = t.Name });
-                            }
-                        }
-                    }
+                    noSqlEntity.Tags = unifiedTags.Select(t => new NoSql.Tag { Id = t.Id, Name = t.Name }).ToList();
                     await _mongoRepo.UpdateAsync(id, noSqlEntity);
                     break;
 
                 case DatabaseType.Relational:
                     var relEntity = _mapper.ToRelational(request.Data);
-
-                    var relTagsList = new List<Rel.Tag_Event>();
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagIdStr in request.Data.TagIds)
-                        {
-                            if (int.TryParse(tagIdStr, out int tagId))
-                            {
-                                var existingTag = await _relTagRepo.GetAsync(tagId);
-                                if (existingTag != null)
-                                {
-                                    relTagsList.Add(new Rel.Tag_Event { Name = existingTag.Name });
-                                }
-                            }
-                        }
-                    }
-                    relEntity.EventTags = relTagsList;
-
+                    relEntity.EventTags = unifiedTags.Select(t => new Rel.Tag_Event { Name = t.Name }).ToList();
                     await _relRepo.UpdateAsync(relEntity);
                     break;
 
                 case DatabaseType.ObjectRelational:
                     var objEntity = _mapper.ToObjectRelational(request.Data);
-
-                    var objTagsList = new List<Obj.Tag_Event>();
-                    if (request.Data.TagIds != null)
-                    {
-                        foreach (var tagIdStr in request.Data.TagIds)
-                        {
-                            if (int.TryParse(tagIdStr, out int tagId))
-                            {
-                                var existingTag = await _objTagRepo.GetAsync(tagId);
-                                if (existingTag != null)
-                                {
-                                    objTagsList.Add(new Obj.Tag_Event { Name = existingTag.Name });
-                                }
-                            }
-                        }
-                    }
-                    objEntity.EventTags = objTagsList;
-
+                    objEntity.EventTags = unifiedTags.Select(t => new Obj.Tag_Event { Name = t.Name }).ToList();
                     await _objRepo.UpdateAsync(int.Parse(id), objEntity);
                     break;
             }

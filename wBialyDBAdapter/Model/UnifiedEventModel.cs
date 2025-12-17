@@ -11,7 +11,6 @@
         public string Author { get; set; } = string.Empty;
         public string Link { get; set; } = string.Empty;
 
-        public List<string> TagIds { get; set; } = new List<string>();
-        public List<string> Tags { get; set; } = new List<string>();
+        public List<UnifiedTagModel> Tags { get; set; } = new List<UnifiedTagModel>();
     }
 }
