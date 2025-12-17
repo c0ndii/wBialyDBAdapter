@@ -12,7 +12,8 @@
         public string Author { get; set; } = string.Empty;
         public string Link { get; set; } = string.Empty;
 
-        public List<string> Tags { get; set; } = new();
+        public List<string> TagIds { get; set; } = new List<string>();
+        public List<string> Tags { get; set; } = new List<string>();
     }
 
 }

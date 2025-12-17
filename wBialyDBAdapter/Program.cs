@@ -53,17 +53,25 @@ builder.Services.AddSingleton<NoSQLDB>();
 builder.Services.AddScoped<IEventMapper, EventMapper>();
 builder.Services.AddScoped<IGastroMapper, GastroMapper>();
 
+builder.Services.AddScoped<ITagMapper, TagMapper>();
+builder.Services.AddScoped<ITagService, TagService>();
+
 // Add Relational Repositories
 builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Event>, EventRepository>();
 builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Gastro>, GastroRepository>();
+builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Tag_Event>, wBialyDBAdapter.Repository.Relational.Implementation.TagEventRepository>();
+builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Tag_Gastro>, wBialyDBAdapter.Repository.Relational.Implementation.TagGastroRepository>();
 
 // Add Object Relational Repositories
 builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Event>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.EventRepository>();
 builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Gastro>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.GastroRepository>();
+builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Event>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.TagEventRepository>();
+builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Gastro>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.TagGastroRepository>();
 
 // Add NoSQL Repositories
 builder.Services.AddScoped<IBaseRepository<Event>, wBialyDBAdapter.Repository.NoSQL.Implementation.EventRepository>();
 builder.Services.AddScoped<IBaseRepository<Gastro>, wBialyDBAdapter.Repository.NoSQL.Implementation.GastroRepository>();
+builder.Services.AddScoped<IBaseRepository<Tag>, wBialyDBAdapter.Repository.NoSQL.Implementation.TagRepository>();
 
 // Add services
 builder.Services.AddScoped<IQueryService<UnifiedEventModel>, EventService>();
