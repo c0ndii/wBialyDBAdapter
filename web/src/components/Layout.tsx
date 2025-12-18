@@ -76,14 +76,14 @@ export const Layout = () => {
         </Toolbar>
       </AppBar>
       <Box
-        sx={(theme) => ({
+        sx={{
           display: "flex",
           flexDirection: "column",
           flex: 1,
           backgroundColor: "transparent",
           px: 2,
           py: 3,
-        })}
+        }}
       >
         <Box
           sx={{

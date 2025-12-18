@@ -1,6 +1,11 @@
 import { useTags } from "@/api/hooks/tags"
 import { Box, TextField } from "@mui/material"
-import { Controller, type FieldPath, type FieldValues, type UseFormReturn } from "react-hook-form"
+import {
+  Controller,
+  type FieldPath,
+  type FieldValues,
+  type UseFormReturn,
+} from "react-hook-form"
 import { TagsSelect } from "./TagsSelect"
 
 interface GastroFormProps<T extends FieldValues> {
@@ -49,39 +54,39 @@ export const GastroForm = <T extends FieldValues>({
     >
       <TextField
         label="Tytuł"
-        {...register("title")}
+        {...register("title" as FieldPath<T>)}
         error={!!errors.title}
-        helperText={errors.title?.message}
+        helperText={errors.title?.message as unknown as string}
       />
 
       <TextField
         label="Opis"
         multiline
         minRows={3}
-        {...register("description")}
+        {...register("description" as FieldPath<T>)}
         error={!!errors.description}
-        helperText={errors.description?.message}
+        helperText={errors.description?.message as unknown as string}
       />
 
       <TextField
         label="Autor"
-        {...register("author")}
+        {...register("author" as FieldPath<T>)}
         error={!!errors.author}
-        helperText={errors.author?.message}
+        helperText={errors.author?.message as unknown as string}
       />
 
       <TextField
         label="Link"
-        {...register("link")}
+        {...register("link" as FieldPath<T>)}
         error={!!errors.link}
-        helperText={errors.link?.message}
+        helperText={errors.link?.message as unknown as string}
       />
 
       <TextField
         label="Miejsce"
-        {...register("place")}
+        {...register("place" as FieldPath<T>)}
         error={!!errors.place}
-        helperText={errors.place?.message}
+        helperText={errors.place?.message as unknown as string}
       />
 
       <Controller
@@ -106,12 +111,15 @@ export const GastroForm = <T extends FieldValues>({
       <TagsSelect
         formContext={formContext}
         tags={tagsData?.data}
-        fieldName="tags"
+        fieldName={"tags" as FieldPath<T>}
         label="Tagi"
       />
 
       {showAddDate && (
-        <input type="hidden" {...register("addDate", { valueAsDate: true })} />
+        <input
+          type="hidden"
+          {...register("addDate" as FieldPath<T>, { valueAsDate: true })}
+        />
       )}
     </Box>
   )
