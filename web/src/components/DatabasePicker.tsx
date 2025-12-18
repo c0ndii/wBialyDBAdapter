@@ -25,8 +25,8 @@ export function DatabasePicker() {
 
   return (
     <div>
-      <IconButton onClick={handleClick}>
-        <SettingsIcon />
+      <IconButton onClick={handleClick} color="inherit">
+        <SettingsIcon htmlColor="#ffffff" />
       </IconButton>
       <Menu
         id="demo-positioned-menu"

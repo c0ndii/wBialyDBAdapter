@@ -1,26 +1,20 @@
 import { useCreateGastro, useGastros } from "@/api/hooks/gastro"
-import { useTags } from "@/api/hooks/tags"
+import { GastroForm } from "@/components/GastroForm"
 import { PostList } from "@/components/PostList"
 import { type GastroSchema, gastroSchema } from "@/schema/gastro.schema"
-import { getStyles } from "@/utils/getStyles"
 import { zodResolver } from "@hookform/resolvers/zod"
+import AddRoundedIcon from "@mui/icons-material/AddRounded"
 import {
   Box,
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  MenuItem,
-  OutlinedInput,
-  Select,
-  TextField,
-  useTheme,
 } from "@mui/material"
 import { createLazyFileRoute } from "@tanstack/react-router"
 import { useState } from "react"
-import { Controller, useForm, type UseFormReturn } from "react-hook-form"
+import { useForm, type UseFormReturn } from "react-hook-form"
 
 export const Route = createLazyFileRoute("/gastros/")({
   component: GastroView,
@@ -41,33 +35,48 @@ function GastroView() {
     handleClose()
   }
 
+  const defaultValues: GastroSchema = {
+    title: "",
+    description: "",
+    author: "",
+    addDate: new Date(),
+    link: "",
+    place: "",
+    day: new Date(),
+    tags: [],
+  }
+
   const form = useForm<GastroSchema>({
-    defaultValues: {
-      title: "",
-      description: "",
-      author: "",
-      addDate: new Date(),
-      link: "",
-      place: "",
-      day: new Date(),
-      tags: [],
-    },
+    defaultValues,
     resolver: zodResolver(gastroSchema),
   })
 
   const handleClickOpen = () => {
+    form.reset(defaultValues)
     setOpen(true)
   }
 
   const handleClose = () => {
+    form.reset(defaultValues)
     setOpen(false)
   }
 
   return (
     <Box>
       <Box>
-        <Button color="success" variant="outlined" onClick={handleClickOpen}>
-          + Gastro
+        <Button
+          color="primary"
+          variant="contained"
+          startIcon={<AddRoundedIcon />}
+          onClick={handleClickOpen}
+          sx={{
+            textTransform: "none",
+            borderRadius: 999,
+            boxShadow: "0 10px 30px rgba(59,130,246,0.25)",
+            px: 2.5,
+          }}
+        >
+          Dodaj gastro
         </Button>
       </Box>
       <PostList events={data?.data} type="gastro" />
@@ -75,20 +84,24 @@ function GastroView() {
       <Dialog
         open={open}
         onClose={handleClose}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            p: 1,
+            boxShadow: "0 20px 60px rgba(15,23,42,0.2)",
+            minWidth: 520,
+          },
         }}
       >
-        <DialogTitle>Dodaj</DialogTitle>
-        <DialogContent>
+        <DialogTitle sx={{ fontWeight: 700, pb: 1, px: 2.5 }}>
+          Dodaj
+        </DialogTitle>
+        <DialogContent sx={{ pt: 0, px: 2.5 }}>
           <CreateForm formContext={form} onSubmit={handleSubmit} />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ px: 2.5, pb: 2, pt: 1.5, gap: 1 }}>
           <Button color="inherit" onClick={handleClose}>
-            Cancel
+            Anuluj
           </Button>
           <Button
             type="submit"
@@ -96,7 +109,7 @@ function GastroView() {
             color="success"
             autoFocus
           >
-            Create
+            Dodaj
           </Button>
         </DialogActions>
       </Dialog>
@@ -110,127 +123,5 @@ type Props = {
 }
 
 const CreateForm = ({ onSubmit, formContext }: Props) => {
-  const { data } = useTags({
-    pageIndex: 0,
-    pageSize: 25,
-  })
-  const theme = useTheme()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = formContext
-
-  console.log(data)
-
-  return (
-    <Box
-      component="form"
-      id="createProjectForm"
-      sx={{
-        paddingTop: 1,
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        minWidth: "500px",
-      }}
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <TextField
-        label="Tytuł"
-        {...register("title")}
-        error={!!errors.title}
-        helperText={errors.title?.message}
-      />
-
-      <TextField
-        label="Opis"
-        multiline
-        minRows={3}
-        {...register("description")}
-        error={!!errors.description}
-        helperText={errors.description?.message}
-      />
-
-      <TextField
-        label="Autor"
-        {...register("author")}
-        error={!!errors.author}
-        helperText={errors.author?.message}
-      />
-
-      <TextField
-        label="Link"
-        {...register("link")}
-        error={!!errors.link}
-        helperText={errors.link?.message}
-      />
-
-      <TextField
-        label="Miejsce"
-        {...register("place")}
-        error={!!errors.place}
-        helperText={errors.place?.message}
-      />
-
-      <TextField
-        type="date"
-        label="Dzień"
-        InputLabelProps={{ shrink: true }}
-        {...register("day", {
-          valueAsDate: true,
-        })}
-        error={!!errors.day}
-        helperText={errors.day?.message}
-      />
-
-      <Controller
-        name="tags"
-        control={formContext.control}
-        render={({ field }) => (
-          <Select
-            multiple
-            value={
-              Array.isArray(field.value) ? field.value.map((tag) => tag.id) : []
-            }
-            onChange={(e) => {
-              const selectedIds = e.target.value as string[]
-              const selectedTags =
-                data?.data.filter((tag) => selectedIds.includes(tag.id)) || []
-              field.onChange(selectedTags)
-            }}
-            input={<OutlinedInput label="Tagi" />}
-            renderValue={(selected: string[]) => (
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
-                {selected.map((tagId) => {
-                  const tag = data?.data.find((t) => t.id === tagId)
-                  return tag ? <Chip key={tagId} label={tag.name} /> : null
-                })}
-              </Box>
-            )}
-            MenuProps={{
-              PaperProps: {
-                style: {
-                  maxHeight: 8 * 4.5 + 48,
-                  width: 250,
-                },
-              },
-            }}
-          >
-            {data?.data.map((tag) => (
-              <MenuItem
-                key={tag.id}
-                value={tag.id}
-                style={getStyles(tag, data.data, theme)}
-              >
-                {tag.name}
-              </MenuItem>
-            ))}
-          </Select>
-        )}
-      />
-
-      <input type="hidden" {...register("addDate", { valueAsDate: true })} />
-    </Box>
-  )
+  return <GastroForm formContext={formContext} onSubmit={onSubmit} />
 }

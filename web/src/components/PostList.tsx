@@ -40,7 +40,9 @@ export function PostList({
             left={<Post.Tags tags={event.tags.map((t) => t.name)} />}
             right={
               <Post.DateText>
-                {`dodane: ${new Date(event.addDate).toLocaleString("pl-PL")}`}
+                {type === "event"
+                  ? `data: ${new Date((event as Event).eventDate).toLocaleDateString("pl-PL")}`
+                  : `dzień: ${new Date((event as Gastro).day).toLocaleDateString("pl-PL")}`}
               </Post.DateText>
             }
           />
