@@ -27,7 +27,7 @@ namespace wBialyDBAdapter.Database.Relational.Helpers
             {
                 await conn.OpenAsync();
 
-                var scriptPath = Path.Combine(AppContext.BaseDirectory, "Resources", "MyRDB.sql");
+                var scriptPath = Path.Combine(AppContext.BaseDirectory, "Resources", "MyRDb.sql");
                 var script = await File.ReadAllTextAsync(scriptPath);
 
                 var batches = script.Split(

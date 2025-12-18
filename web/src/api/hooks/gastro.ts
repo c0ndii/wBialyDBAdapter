@@ -2,6 +2,7 @@ import { useDatabase } from "@/hooks/useDatabase"
 import type { EditGastroSchema, GastroSchema } from "@/schema/gastro.schema"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
+import { apiUrl } from "../client"
 import type { EndpointRequest, EndpointResponse, Post, Tag } from "../types"
 
 export interface Gastro extends Post {
@@ -15,7 +16,7 @@ export const useGastros = (request: EndpointRequest) => {
   return useQuery<EndpointResponse<Gastro[]>>({
     queryKey: ["gastros", databaseType],
     queryFn: async () => {
-      const res = await fetch("/api/gastro/filter", {
+      const res = await fetch(apiUrl("/api/gastro/filter"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,12 +43,15 @@ export const useGastro = (id: string) => {
       const params = new URLSearchParams([
         ["databaseType", databaseType.toString()],
       ])
-      const res = await fetch(`/api/gastro/${id}?` + params.toString(), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      const res = await fetch(
+        apiUrl(`/api/gastro/${id}`) + "?" + params.toString(),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
 
       if (!res.ok) {
         throw new Error("Error fetching gastro: " + id)
@@ -67,7 +71,7 @@ export const useDeleteGastro = () => {
   return useMutation<EndpointResponse<boolean>, unknown, string, unknown>({
     mutationKey: ["deleteGastro", databaseType],
     mutationFn: async (id) => {
-      const res = await fetch(`/api/gastro/${id}`, {
+      const res = await fetch(apiUrl(`/api/gastro/${id}`), {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ databaseType }),
@@ -97,7 +101,7 @@ export const useCreateGastro = () => {
   >({
     mutationKey: ["createGastro", databaseType],
     mutationFn: async (data) => {
-      const res = await fetch("/api/gastro", {
+      const res = await fetch(apiUrl("/api/gastro"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: { ...data }, databaseType }),
@@ -126,7 +130,7 @@ export const useUpdateGastro = () => {
   >({
     mutationKey: ["updateGastro", databaseType],
     mutationFn: async ({ id, data }) => {
-      const res = await fetch(`/api/gastro/${id}`, {
+      const res = await fetch(apiUrl(`/api/gastro/${id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: { ...data }, databaseType }),

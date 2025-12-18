@@ -25,6 +25,20 @@ builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS: allow frontend origin
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        // Allow localhost:3000 by default; can be overridden via env CORS__AllowedOrigins
+        var allowedOrigins = builder.Configuration.GetSection("CORS:AllowedOrigins").Get<string[]>()
+            ?? new[] { "http://localhost:3000" };
+        policy.WithOrigins(allowedOrigins)
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // Section with all databases configuration
 var databaseSections = builder.Configuration.GetSection("Databases");
 
@@ -100,7 +114,8 @@ using (var scope = app.Services.CreateScope())
 using (var scope = app.Services.CreateScope())
 {
     var conn = scope.ServiceProvider.GetRequiredService<IOptions<RelationalDBSettings>>();
-    if (conn != null) {
+    if (conn != null)
+    {
         await RDBHelper.EnsureRelationalDatabaseInitializedAsync(conn.Value.ConnectionString);
     }
 }
@@ -115,6 +130,8 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 
