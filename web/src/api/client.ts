@@ -10,3 +10,8 @@ export const queryClient = new QueryClient({
     },
   },
 })
+
+// Build-time API base, e.g. http://localhost:8080
+export const apiBase: string =
+  (import.meta.env.VITE_API_BASE as string | undefined) ?? ""
+export const apiUrl = (path: string) => `${apiBase}${path}`

@@ -26,13 +26,13 @@
   </ItemGroup>
 
   <ItemGroup>
-	 <Folder Include="Resources\" />
+	     <Folder Include="Resources\" />
   </ItemGroup>
-    <ItemGroup>
-	    <Content Include="Resources\MyRDB.sql">
+  <ItemGroup>
+	    <Content Include="Resources\MyRDb.sql">
 		    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	    </Content>
-    </ItemGroup>
+  </ItemGroup>
 
 
 </Project>
