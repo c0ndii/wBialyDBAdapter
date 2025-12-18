@@ -12,7 +12,7 @@ using wBialyDBAdapter.Database.ObjectRelational;
 namespace wBialyDBAdapter.Migrations
 {
     [DbContext(typeof(ORDB))]
-    [Migration("20251217201341_init")]
+    [Migration("20251218201521_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -49,6 +49,21 @@ namespace wBialyDBAdapter.Migrations
                         {
                             EventTagsTagID = 2,
                             EventsPostId = 2
+                        },
+                        new
+                        {
+                            EventTagsTagID = 7,
+                            EventsPostId = 3
+                        },
+                        new
+                        {
+                            EventTagsTagID = 4,
+                            EventsPostId = 4
+                        },
+                        new
+                        {
+                            EventTagsTagID = 8,
+                            EventsPostId = 5
                         });
                 });
 
@@ -69,13 +84,28 @@ namespace wBialyDBAdapter.Migrations
                     b.HasData(
                         new
                         {
-                            GastroTagsTagID = 3,
-                            GastrosPostId = 3
+                            GastroTagsTagID = 9,
+                            GastrosPostId = 6
                         },
                         new
                         {
-                            GastroTagsTagID = 4,
-                            GastrosPostId = 4
+                            GastroTagsTagID = 10,
+                            GastrosPostId = 7
+                        },
+                        new
+                        {
+                            GastroTagsTagID = 11,
+                            GastrosPostId = 8
+                        },
+                        new
+                        {
+                            GastroTagsTagID = 16,
+                            GastrosPostId = 9
+                        },
+                        new
+                        {
+                            GastroTagsTagID = 13,
+                            GastrosPostId = 10
                         });
                 });
 
@@ -134,6 +164,36 @@ namespace wBialyDBAdapter.Migrations
                             Link = "https://event.com/sport",
                             Place = "Hala Sportowa",
                             Title = "Mecz siatkówki"
+                        },
+                        new
+                        {
+                            PostId = 3,
+                            AddDate = new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Curator",
+                            Description = "Prezentacja dzieł lokalnych artystów.",
+                            Link = "https://event.com/art",
+                            Place = "Galeria Arsenał",
+                            Title = "Wystawa sztuki współczesnej"
+                        },
+                        new
+                        {
+                            PostId = 4,
+                            AddDate = new DateTime(2025, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Admin",
+                            Description = "Dzień pełen zabaw dla całej rodziny.",
+                            Link = "https://event.com/family",
+                            Place = "Park Planty",
+                            Title = "Piknik rodzinny w parku"
+                        },
+                        new
+                        {
+                            PostId = 5,
+                            AddDate = new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "TechOrg",
+                            Description = "Konferencja dla programistów i entuzjastów technologii.",
+                            Link = "https://event.com/tech",
+                            Place = "Centrum Konferencyjne",
+                            Title = "Tech Conference 2025"
                         });
                 });
 
@@ -175,7 +235,7 @@ namespace wBialyDBAdapter.Migrations
                     b.HasData(
                         new
                         {
-                            PostId = 3,
+                            PostId = 6,
                             AddDate = new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Author = "Admin",
                             Description = "Promocje na pizzę w całym mieście.",
@@ -185,13 +245,43 @@ namespace wBialyDBAdapter.Migrations
                         },
                         new
                         {
-                            PostId = 4,
+                            PostId = 7,
                             AddDate = new DateTime(2025, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Author = "Admin",
                             Description = "Święto kuchni wegańskiej.",
                             Link = "https://gastro.com/vegan",
                             Place = "GreenFood",
                             Title = "Vegan Fest"
+                        },
+                        new
+                        {
+                            PostId = 8,
+                            AddDate = new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Chef Wang",
+                            Description = "Tydzień kuchni azjatyckiej z degustacjami.",
+                            Link = "https://gastro.com/asian",
+                            Place = "Asia Restaurant",
+                            Title = "Asian Food Week"
+                        },
+                        new
+                        {
+                            PostId = 9,
+                            AddDate = new DateTime(2025, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Admin",
+                            Description = "Świeże owoce morza prosto z wybrzeża.",
+                            Link = "https://gastro.com/seafood",
+                            Place = "Ocean Bistro",
+                            Title = "Seafood Fiesta"
+                        },
+                        new
+                        {
+                            PostId = 10,
+                            AddDate = new DateTime(2025, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Author = "Pastry Chef",
+                            Description = "Najlepsze desery w mieście w jednym miejscu.",
+                            Link = "https://gastro.com/dessert",
+                            Place = "Sweet Corner",
+                            Title = "Dessert Paradise"
                         });
                 });
 
@@ -226,6 +316,42 @@ namespace wBialyDBAdapter.Migrations
                             TagID = 2,
                             EventID = 0,
                             Name = "Sport"
+                        },
+                        new
+                        {
+                            TagID = 3,
+                            EventID = 0,
+                            Name = "Culture"
+                        },
+                        new
+                        {
+                            TagID = 4,
+                            EventID = 0,
+                            Name = "Family"
+                        },
+                        new
+                        {
+                            TagID = 5,
+                            EventID = 0,
+                            Name = "Outdoor"
+                        },
+                        new
+                        {
+                            TagID = 6,
+                            EventID = 0,
+                            Name = "Education"
+                        },
+                        new
+                        {
+                            TagID = 7,
+                            EventID = 0,
+                            Name = "Art"
+                        },
+                        new
+                        {
+                            TagID = 8,
+                            EventID = 0,
+                            Name = "Technology"
                         });
                 });
 
@@ -251,15 +377,51 @@ namespace wBialyDBAdapter.Migrations
                     b.HasData(
                         new
                         {
-                            TagID = 3,
+                            TagID = 9,
                             GastroID = 0,
                             Name = "Pizza"
                         },
                         new
                         {
-                            TagID = 4,
+                            TagID = 10,
                             GastroID = 0,
                             Name = "Vegan"
+                        },
+                        new
+                        {
+                            TagID = 11,
+                            GastroID = 0,
+                            Name = "Asian"
+                        },
+                        new
+                        {
+                            TagID = 12,
+                            GastroID = 0,
+                            Name = "Italian"
+                        },
+                        new
+                        {
+                            TagID = 13,
+                            GastroID = 0,
+                            Name = "Dessert"
+                        },
+                        new
+                        {
+                            TagID = 14,
+                            GastroID = 0,
+                            Name = "Healthy"
+                        },
+                        new
+                        {
+                            TagID = 15,
+                            GastroID = 0,
+                            Name = "FastFood"
+                        },
+                        new
+                        {
+                            TagID = 16,
+                            GastroID = 0,
+                            Name = "Seafood"
                         });
                 });
 

@@ -9,6 +9,7 @@ namespace wBialyDBAdapter.Mapping
     {
         UnifiedTagModel FromNoSql(NoSql.Tag entity);
 
+        UnifiedTagModel FromRelational(Rel.Tag entity);
         UnifiedTagModel FromRelationalEvent(Rel.Tag_Event entity);
         UnifiedTagModel FromRelationalGastro(Rel.Tag_Gastro entity);
 

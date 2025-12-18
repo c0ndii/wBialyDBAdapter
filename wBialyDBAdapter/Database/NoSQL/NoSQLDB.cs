@@ -11,7 +11,11 @@ namespace wBialyDBAdapter.Database.NoSQL
 
         public NoSQLDB(IOptions<NoSQLDBSettings> settings)
         {
-            var client = new MongoClient(settings.Value.ConnectionString);
+            var clientSettings = MongoClientSettings.FromConnectionString(settings.Value.ConnectionString);
+            clientSettings.ServerSelectionTimeout = TimeSpan.FromSeconds(10);
+            clientSettings.ConnectTimeout = TimeSpan.FromSeconds(10);
+            
+            var client = new MongoClient(clientSettings);
             _database = client.GetDatabase(settings.Value.DatabaseName);
         }
 
@@ -19,5 +23,4 @@ namespace wBialyDBAdapter.Database.NoSQL
         public IMongoCollection<Gastro> Gastros => _database.GetCollection<Gastro>("Gastros");
         public IMongoCollection<Entities.Tag> Tags => _database.GetCollection<Entities.Tag>("Tags");
     }
-
 }

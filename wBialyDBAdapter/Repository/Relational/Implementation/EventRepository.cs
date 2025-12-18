@@ -31,7 +31,15 @@ public class EventRepository : IRelationalRepository<Event>
 		if (_connection.State != ConnectionState.Open)
 			await _connection.OpenAsync();
 
-		return (int)await cmd.ExecuteScalarAsync();
+		var postId = (int)await cmd.ExecuteScalarAsync();
+
+		// Add tags to join table if provided
+		if (ev.EventTags != null && ev.EventTags.Count > 0)
+		{
+			await AddTagsToEventAsync(postId, ev.EventTags);
+		}
+
+		return postId;
 	}
 
 	public async Task<Event?> GetAsync(int id)
@@ -46,7 +54,7 @@ public class EventRepository : IRelationalRepository<Event>
 		using var r = await cmd.ExecuteReaderAsync();
 		if (!await r.ReadAsync()) return null;
 
-		return new Event
+		var evt = new Event
 		{
 			PostId = r.GetInt32("PostId"),
 			Title = r.GetString("Title"),
@@ -57,6 +65,11 @@ public class EventRepository : IRelationalRepository<Event>
 			Link = r.GetString("Link"),
 			EventDate = r.GetDateTime("EventDate"),
 		};
+
+		await r.CloseAsync();
+		evt.EventTags = await LoadTagsForEventAsync(evt.PostId);
+
+		return evt;
 	}
 
 	public async Task<IEnumerable<Event>> GetAllAsync()
@@ -84,6 +97,13 @@ public class EventRepository : IRelationalRepository<Event>
 				Link = r.GetString("Link"),
 				EventDate = r.GetDateTime("EventDate"),
 			});
+		}
+
+		await r.CloseAsync();
+
+		foreach (var evt in list)
+		{
+			evt.EventTags = await LoadTagsForEventAsync(evt.PostId);
 		}
 
 		return list;
@@ -116,6 +136,13 @@ public class EventRepository : IRelationalRepository<Event>
 			await _connection.OpenAsync();
 
 		await cmd.ExecuteNonQueryAsync();
+
+		// Remove existing tags and add new ones
+		await RemoveTagsFromEventAsync(ev.PostId);
+		if (ev.EventTags != null && ev.EventTags.Count > 0)
+		{
+			await AddTagsToEventAsync(ev.PostId, ev.EventTags);
+		}
 	}
 
 	public async Task DeleteAsync(int id)
@@ -123,6 +150,69 @@ public class EventRepository : IRelationalRepository<Event>
 		using var cmd = _connection.CreateCommand();
 		cmd.CommandText = @"DELETE FROM Events WHERE PostId=@id";
 		cmd.AddParam("@id", id);
+
+		if (_connection.State != ConnectionState.Open)
+			await _connection.OpenAsync();
+
+		await cmd.ExecuteNonQueryAsync();
+	}
+
+	private async Task<ICollection<Tag_Event>> LoadTagsForEventAsync(int eventId)
+	{
+		var tags = new List<Tag_Event>();
+
+		using var cmd = _connection.CreateCommand();
+		cmd.CommandText = @"
+            SELECT t.TagID, t.Name
+            FROM Tag t
+            INNER JOIN Event_Tag_Join etj ON t.TagID = etj.TagId
+            WHERE etj.EventId = @eventId";
+		cmd.AddParam("@eventId", eventId);
+
+		if (_connection.State != ConnectionState.Open)
+			await _connection.OpenAsync();
+
+		using var r = await cmd.ExecuteReaderAsync();
+
+		while (await r.ReadAsync())
+		{
+			tags.Add(new Tag_Event
+			{
+				TagID = r.GetInt32("TagID"),
+				Name = r.GetString("Name")
+			});
+		}
+
+		return tags;
+	}
+
+	private async Task AddTagsToEventAsync(int eventId, ICollection<Tag_Event> tags)
+	{
+		if (tags == null || tags.Count == 0)
+			return;
+
+		foreach (var tag in tags)
+		{
+			using var cmd = _connection.CreateCommand();
+			cmd.CommandText = @"
+                INSERT INTO Event_Tag_Join (EventId, TagId)
+                SELECT @EventId, TagID FROM Tag WHERE Name = @TagName";
+
+			cmd.AddParam("@EventId", eventId);
+			cmd.AddParam("@TagName", tag.Name);
+
+			if (_connection.State != ConnectionState.Open)
+				await _connection.OpenAsync();
+
+			await cmd.ExecuteNonQueryAsync();
+		}
+	}
+
+	private async Task RemoveTagsFromEventAsync(int eventId)
+	{
+		using var cmd = _connection.CreateCommand();
+		cmd.CommandText = @"DELETE FROM Event_Tag_Join WHERE EventId = @eventId";
+		cmd.AddParam("@eventId", eventId);
 
 		if (_connection.State != ConnectionState.Open)
 			await _connection.OpenAsync();

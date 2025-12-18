@@ -10,6 +10,9 @@ namespace wBialyDBAdapter.Mapping.Implementation
         public UnifiedTagModel FromNoSql(NoSql.Tag entity) =>
             new UnifiedTagModel { Id = entity.Id, Name = entity.Name };
 
+        public UnifiedTagModel FromRelational(Rel.Tag entity) =>
+            new UnifiedTagModel { Id = entity.TagID.ToString(), Name = entity.Name };
+
         public UnifiedTagModel FromRelationalEvent(Rel.Tag_Event entity) =>
             new UnifiedTagModel { Id = entity.TagID.ToString(), Name = entity.Name };
 

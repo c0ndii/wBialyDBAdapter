@@ -131,7 +131,13 @@ namespace wBialyDBAdapter.Migrations
                 values: new object[,]
                 {
                     { 1, 0, "Music" },
-                    { 2, 0, "Sport" }
+                    { 2, 0, "Sport" },
+                    { 3, 0, "Culture" },
+                    { 4, 0, "Family" },
+                    { 5, 0, "Outdoor" },
+                    { 6, 0, "Education" },
+                    { 7, 0, "Art" },
+                    { 8, 0, "Technology" }
                 });
 
             migrationBuilder.InsertData(
@@ -140,7 +146,10 @@ namespace wBialyDBAdapter.Migrations
                 values: new object[,]
                 {
                     { 1, new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Największy festiwal rockowy w mieście.", "https://event.com/rock", "Białystok Arena", "Rock Festival" },
-                    { 2, new DateTime(2025, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Turniej siatkówki amatorskiej.", "https://event.com/sport", "Hala Sportowa", "Mecz siatkówki" }
+                    { 2, new DateTime(2025, 1, 2, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Turniej siatkówki amatorskiej.", "https://event.com/sport", "Hala Sportowa", "Mecz siatkówki" },
+                    { 3, new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Curator", "Prezentacja dzieł lokalnych artystów.", "https://event.com/art", "Galeria Arsenał", "Wystawa sztuki współczesnej" },
+                    { 4, new DateTime(2025, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Dzień pełen zabaw dla całej rodziny.", "https://event.com/family", "Park Planty", "Piknik rodzinny w parku" },
+                    { 5, new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "TechOrg", "Konferencja dla programistów i entuzjastów technologii.", "https://event.com/tech", "Centrum Konferencyjne", "Tech Conference 2025" }
                 });
 
             migrationBuilder.InsertData(
@@ -148,8 +157,14 @@ namespace wBialyDBAdapter.Migrations
                 columns: new[] { "TagID", "GastroID", "Name" },
                 values: new object[,]
                 {
-                    { 3, 0, "Pizza" },
-                    { 4, 0, "Vegan" }
+                    { 9, 0, "Pizza" },
+                    { 10, 0, "Vegan" },
+                    { 11, 0, "Asian" },
+                    { 12, 0, "Italian" },
+                    { 13, 0, "Dessert" },
+                    { 14, 0, "Healthy" },
+                    { 15, 0, "FastFood" },
+                    { 16, 0, "Seafood" }
                 });
 
             migrationBuilder.InsertData(
@@ -157,8 +172,11 @@ namespace wBialyDBAdapter.Migrations
                 columns: new[] { "PostId", "AddDate", "Author", "Description", "Link", "Place", "Title" },
                 values: new object[,]
                 {
-                    { 3, new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Promocje na pizzę w całym mieście.", "https://gastro.com/pizza", "PizzaHouse", "Pizza Day" },
-                    { 4, new DateTime(2025, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Święto kuchni wegańskiej.", "https://gastro.com/vegan", "GreenFood", "Vegan Fest" }
+                    { 6, new DateTime(2025, 1, 3, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Promocje na pizzę w całym mieście.", "https://gastro.com/pizza", "PizzaHouse", "Pizza Day" },
+                    { 7, new DateTime(2025, 1, 4, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Święto kuchni wegańskiej.", "https://gastro.com/vegan", "GreenFood", "Vegan Fest" },
+                    { 8, new DateTime(2025, 1, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Chef Wang", "Tydzień kuchni azjatyckiej z degustacjami.", "https://gastro.com/asian", "Asia Restaurant", "Asian Food Week" },
+                    { 9, new DateTime(2025, 1, 6, 0, 0, 0, 0, DateTimeKind.Unspecified), "Admin", "Świeże owoce morza prosto z wybrzeża.", "https://gastro.com/seafood", "Ocean Bistro", "Seafood Fiesta" },
+                    { 10, new DateTime(2025, 1, 7, 0, 0, 0, 0, DateTimeKind.Unspecified), "Pastry Chef", "Najlepsze desery w mieście w jednym miejscu.", "https://gastro.com/dessert", "Sweet Corner", "Dessert Paradise" }
                 });
 
             migrationBuilder.InsertData(
@@ -167,7 +185,10 @@ namespace wBialyDBAdapter.Migrations
                 values: new object[,]
                 {
                     { 1, 1 },
-                    { 2, 2 }
+                    { 2, 2 },
+                    { 4, 4 },
+                    { 7, 3 },
+                    { 8, 5 }
                 });
 
             migrationBuilder.InsertData(
@@ -175,8 +196,11 @@ namespace wBialyDBAdapter.Migrations
                 columns: new[] { "GastroTagsTagID", "GastrosPostId" },
                 values: new object[,]
                 {
-                    { 3, 3 },
-                    { 4, 4 }
+                    { 9, 6 },
+                    { 10, 7 },
+                    { 11, 8 },
+                    { 13, 10 },
+                    { 16, 9 }
                 });
 
             migrationBuilder.CreateIndex(

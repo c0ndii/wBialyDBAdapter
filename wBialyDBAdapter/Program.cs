@@ -59,6 +59,7 @@ builder.Services.AddScoped<ITagService, TagService>();
 // Add Relational Repositories
 builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Event>, EventRepository>();
 builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Gastro>, GastroRepository>();
+builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Tag>, wBialyDBAdapter.Repository.Relational.Implementation.TagRepository>();
 builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Tag_Event>, wBialyDBAdapter.Repository.Relational.Implementation.TagEventRepository>();
 builder.Services.AddScoped<IRelationalRepository<wBialyDBAdapter.Database.Relational.Entities.Tag_Gastro>, wBialyDBAdapter.Repository.Relational.Implementation.TagGastroRepository>();
 
@@ -101,6 +102,15 @@ using (var scope = app.Services.CreateScope())
     var conn = scope.ServiceProvider.GetRequiredService<IOptions<RelationalDBSettings>>();
     if (conn != null) {
         await RDBHelper.EnsureRelationalDatabaseInitializedAsync(conn.Value.ConnectionString);
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var noSqlDb = scope.ServiceProvider.GetRequiredService<NoSQLDB>();
+    if (noSqlDb != null)
+    {
+        await wBialyDBAdapter.Database.NoSQL.NoSQLSeeder.SeedAsync(noSqlDb);
     }
 }
 
