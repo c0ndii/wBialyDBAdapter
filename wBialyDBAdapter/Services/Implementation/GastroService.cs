@@ -76,18 +76,21 @@ namespace wBialyDBAdapter.Services.Implementation
                     var noSqlEntity = _mapper.ToNoSql(request.Data);
                     noSqlEntity.Tags = unifiedTags.Select(t => new NoSql.Tag { Id = t.Id, Name = t.Name }).ToList();
                     await _mongoRepo.AddAsync(noSqlEntity);
+                    request.Data.Id = noSqlEntity.Id?.ToString();
                     break;
 
                 case DatabaseType.Relational:
                     var relEntity = _mapper.ToRelational(request.Data);
                     relEntity.GastroTags = unifiedTags.Select(t => new Rel.Tag_Gastro { Name = t.Name }).ToList();
-                    await _relRepo.CreateAsync(relEntity);
+                    var postId = await _relRepo.CreateAsync(relEntity);
+                    request.Data.Id = postId.ToString();
                     break;
 
                 case DatabaseType.ObjectRelational:
                     var objEntity = _mapper.ToObjectRelational(request.Data);
                     objEntity.GastroTags = unifiedTags.Select(t => new Obj.Tag_Gastro { Name = t.Name }).ToList();
                     await _objRepo.CreateAsync(objEntity);
+                    request.Data.Id = objEntity.PostId.ToString();
                     break;
             }
 

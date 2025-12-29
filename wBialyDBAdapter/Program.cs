@@ -78,6 +78,8 @@ builder.Services.AddScoped<IBaseRepository<Tag>, wBialyDBAdapter.Repository.NoSQ
 builder.Services.AddScoped<IQueryService<UnifiedEventModel>, EventService>();
 builder.Services.AddScoped<IQueryService<UnifiedGastroModel>, GastroService>();
 
+builder.Services.AddScoped<IBenchmarkService, BenchmarkService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
