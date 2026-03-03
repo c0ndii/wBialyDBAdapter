@@ -39,7 +39,8 @@ builder.Services.AddCors(options =>
             ?? new[] { "http://localhost:3000" };
         policy.WithOrigins(allowedOrigins)
               .AllowAnyHeader()
-              .AllowAnyMethod();
+              .AllowAnyMethod()
+              .AllowCredentials();
     });
 });
 
@@ -98,6 +99,17 @@ builder.Services.AddScoped<IQueryService<UnifiedEventModel>, EventService>();
 builder.Services.AddScoped<IQueryService<UnifiedGastroModel>, GastroService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+// Add Authentication
+builder.Services.AddAuthentication("MyCookieAuth")
+    .AddCookie("MyCookieAuth", options =>
+    {
+        options.Cookie.Name = "UserAuthCookie";
+        options.LoginPath = "/login";
+
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -138,6 +150,8 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using wBialyDBAdapter.Database.ObjectRelational.Entities;
+using wBialyDBAdapter.Database.ObjectRelational.Entities.Message;
+using wBialyDBAdapter.Database.ObjectRelational.Entities.User;
 
 namespace wBialyDBAdapter.Database.ObjectRelational
 {
@@ -45,6 +47,18 @@ namespace wBialyDBAdapter.Database.ObjectRelational
 
             modelBuilder.Entity<User>()
                 .HasKey(x => x.UserId);
+
+            modelBuilder.Entity<Message>(entity =>
+            {
+                entity.HasOne(m => m.User)
+                      .WithMany() 
+                      .HasForeignKey(m => m.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasMany(m => m.CanModify)
+                      .WithMany()
+                      .UsingEntity(j => j.ToTable("CanModify"));
+            });
 
             base.OnModelCreating(modelBuilder);
 

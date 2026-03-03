@@ -22,7 +22,7 @@ namespace wBialyDBAdapter.Services.Implementation.User
             await _userRepository.Register(input);
         }
 
-        public async Task<bool> Login(UserLoginInput input)
+        public async Task<UserGetDto?> Login(UserLoginInput input)
         {
             return await _userRepository.Login(input);
         }

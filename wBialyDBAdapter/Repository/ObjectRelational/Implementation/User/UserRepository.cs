@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using wBialyDBAdapter.Database.ObjectRelational;
+using wBialyDBAdapter.Database.ObjectRelational.Entities.User;
 using wBialyDBAdapter.Model.User;
 using wBialyDBAdapter.Repository.ObjectRelational.User;
 
@@ -31,11 +32,12 @@ namespace wBialyDBAdapter.Repository.ObjectRelational.Implementation.User
             });
         }
 
-        public async Task<bool> Login(UserLoginInput input)
+        public async Task<UserGetDto?> Login(UserLoginInput input)
         {
-            return 
-                (await _context.Users.FirstOrDefaultAsync(x => x.Login == input.Login && x.Password == input.Password)) != null
-                ? true : false;
+            return await _context.Users
+                .Where(x => x.Login == input.Login && x.Password == input.Password)
+                .Select(x => new UserGetDto { Id = x.UserId, Username = x.Username, Password = x.Password, Login = x.Login })
+                .FirstOrDefaultAsync();
         }
     }
 }

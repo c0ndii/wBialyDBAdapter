@@ -6,6 +6,6 @@ namespace wBialyDBAdapter.Services.User
     {
         Task<UserGetDto?> GetUserAsync(int userId);
         Task Register(UserRegisterInput input);
-        Task<bool> Login(UserLoginInput input);
+        Task<UserGetDto?> Login(UserLoginInput input);
     }
 }

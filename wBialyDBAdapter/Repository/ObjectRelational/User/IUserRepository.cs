@@ -6,6 +6,6 @@ namespace wBialyDBAdapter.Repository.ObjectRelational.User
     {
         Task<UserGetDto?> GetAsync(int userId);
         Task Register(UserRegisterInput input);
-        Task<bool> Login(UserLoginInput input);
+        Task<UserGetDto?> Login(UserLoginInput input);
     }
 }
