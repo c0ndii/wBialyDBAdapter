@@ -11,6 +11,8 @@ namespace wBialyDBAdapter.Database.ObjectRelational
         public DbSet<Tag_Event> EventTags { get; set; }
         public DbSet<Tag_Gastro> GastroTags { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         public ORDB(DbContextOptions<ORDB> options) : base(options)
         {
         }
@@ -40,6 +42,9 @@ namespace wBialyDBAdapter.Database.ObjectRelational
 
             modelBuilder.Entity<Tag_Gastro>()
                 .HasKey(t => t.TagID);
+
+            modelBuilder.Entity<User>()
+                .HasKey(x => x.UserId);
 
             base.OnModelCreating(modelBuilder);
 
