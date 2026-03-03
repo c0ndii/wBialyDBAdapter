@@ -2,6 +2,7 @@ import { useDatabase } from "@/hooks/useDatabase"
 import type { EditEventSchema, EventSchema } from "@/schema/events.schema"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "@tanstack/react-router"
+import { apiUrl } from "../client"
 import type { EndpointRequest, EndpointResponse, Post, Tag } from "../types"
 
 export interface Event extends Post {
@@ -15,7 +16,7 @@ export const useEvents = (request: EndpointRequest) => {
   return useQuery<EndpointResponse<Event[]>>({
     queryKey: ["events", databaseType],
     queryFn: async () => {
-      const res = await fetch("/api/event/filter", {
+      const res = await fetch(apiUrl("/api/event/filter"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,12 +43,15 @@ export const useEvent = (id: string) => {
       const params = new URLSearchParams([
         ["databaseType", databaseType.toString()],
       ])
-      const res = await fetch(`/api/event/${id}?` + params.toString(), {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      const res = await fetch(
+        apiUrl(`/api/event/${id}`) + "?" + params.toString(),
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
 
       if (!res.ok) {
         throw new Error("Error fetching gastro: " + id)
@@ -67,7 +71,7 @@ export const useDeleteEvent = () => {
   return useMutation<EndpointResponse<boolean>, unknown, string, unknown>({
     mutationKey: ["deleteEvent", databaseType],
     mutationFn: async (id) => {
-      const res = await fetch(`/api/event/${id}`, {
+      const res = await fetch(apiUrl(`/api/event/${id}`), {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +100,7 @@ export const useCreateEvent = () => {
   return useMutation<EndpointResponse<Event[]>, unknown, EventSchema, unknown>({
     mutationKey: ["createEvent", databaseType],
     mutationFn: async (data) => {
-      const res = await fetch("/api/event", {
+      const res = await fetch(apiUrl("/api/event"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: { ...data }, databaseType }),
@@ -127,7 +131,7 @@ export const useUpdateEvent = () => {
   >({
     mutationKey: ["updateEvent", databaseType],
     mutationFn: async ({ id, data }) => {
-      const res = await fetch(`/api/event/${id}`, {
+      const res = await fetch(apiUrl(`/api/event/${id}`), {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ data: { ...data }, databaseType }),
