@@ -2,7 +2,7 @@
 {
     public class UpdateMessageInput
     {
-        public int Id { get; set; }
+        public int MessageId { get; set; }
         public string Content { get; set; } = string.Empty;
     }
 }

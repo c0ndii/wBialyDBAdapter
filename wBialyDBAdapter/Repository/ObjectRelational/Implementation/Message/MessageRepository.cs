@@ -66,9 +66,9 @@ namespace wBialyDBAdapter.Repository.ObjectRelational.Implementation.Message
 
         public async Task<bool> UpdateMessage(UpdateMessageInput input, int userId)
         {
-            var message = await _context.Messages.Include(x => x.User).Include(x => x.CanModify).FirstOrDefaultAsync(x => x.Id == input.Id);
+            var message = await _context.Messages.Include(x => x.User).Include(x => x.CanModify).FirstOrDefaultAsync(x => x.Id == input.MessageId);
 
-            if (message == null || message.UserId != userId || !message.CanModify.Any(x => x.UserId == userId))
+            if (message == null || (message.UserId != userId && !message.CanModify.Any(x => x.UserId == userId)))
                 return false;
 
             var currentUser = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
