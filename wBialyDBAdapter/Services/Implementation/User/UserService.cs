@@ -12,6 +12,11 @@ namespace wBialyDBAdapter.Services.Implementation.User
             _userRepository = userRepository;
         }
 
+        public async Task<IEnumerable<UserGetDto>> GetUsers(int exludedUserId)
+        {
+            return await _userRepository.GetAll(exludedUserId);
+        }
+
         public async Task<UserGetDto?> GetUserAsync(int userId)
         {
             return await _userRepository.GetAsync(userId);

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using wBialyDBAdapter.Extensions;
 using wBialyDBAdapter.Model.User;
 using wBialyDBAdapter.Services.User;
 
@@ -15,6 +17,20 @@ namespace wBialyDBAdapter.Controllers
         public UserController(IUserService userService)
         {
             _userService = userService;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _userService.GetUsers(User.GetUserId()));
+        }
+
+        [HttpGet("/{id}")]
+        [Authorize]
+        public async Task<IActionResult> GetById([FromRoute] int id)
+        {
+            return Ok(await _userService.GetUserAsync(id));
         }
 
         [HttpPost("/login")]
@@ -42,7 +58,5 @@ namespace wBialyDBAdapter.Controllers
             await _userService.Register(input);
             return Ok();
         }
-
-
     }
 }

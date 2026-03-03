@@ -14,6 +14,7 @@ namespace wBialyDBAdapter.Database.ObjectRelational
         public DbSet<Tag_Gastro> GastroTags { get; set; }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public ORDB(DbContextOptions<ORDB> options) : base(options)
         {
