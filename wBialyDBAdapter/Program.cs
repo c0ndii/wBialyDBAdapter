@@ -11,9 +11,13 @@ using wBialyDBAdapter.Mapping.Implementation;
 using wBialyDBAdapter.Model;
 using wBialyDBAdapter.Repository.NoSQL;
 using wBialyDBAdapter.Repository.ObjectRelational;
+using wBialyDBAdapter.Repository.ObjectRelational.Implementation.User;
+using wBialyDBAdapter.Repository.ObjectRelational.User;
 using wBialyDBAdapter.Repository.Relational;
 using wBialyDBAdapter.Services;
 using wBialyDBAdapter.Services.Implementation;
+using wBialyDBAdapter.Services.Implementation.User;
+using wBialyDBAdapter.Services.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -68,6 +72,7 @@ builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.
 builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Gastro>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.GastroRepository>();
 builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Event>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.TagEventRepository>();
 builder.Services.AddScoped<IObjectRelationalRepository<wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Gastro>, wBialyDBAdapter.Repository.ObjectRelational.Implementation.TagGastroRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 // Add NoSQL Repositories
 builder.Services.AddScoped<IBaseRepository<Event>, wBialyDBAdapter.Repository.NoSQL.Implementation.EventRepository>();
@@ -77,6 +82,7 @@ builder.Services.AddScoped<IBaseRepository<Tag>, wBialyDBAdapter.Repository.NoSQ
 // Add services
 builder.Services.AddScoped<IQueryService<UnifiedEventModel>, EventService>();
 builder.Services.AddScoped<IQueryService<UnifiedGastroModel>, GastroService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
