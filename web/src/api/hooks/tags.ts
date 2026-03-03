@@ -1,5 +1,6 @@
 import { useDatabase } from "@/hooks/useDatabase"
 import { useQuery } from "@tanstack/react-query"
+import { apiUrl } from "../client"
 import type { EndpointRequest, EndpointResponse, Tag } from "../types"
 
 export const useTags = (request: EndpointRequest) => {
@@ -8,7 +9,7 @@ export const useTags = (request: EndpointRequest) => {
   return useQuery<EndpointResponse<Tag[]>>({
     queryKey: ["tags", databaseType],
     queryFn: async () => {
-      const res = await fetch("/api/tag/filter", {
+      const res = await fetch(apiUrl("/api/tag/filter"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
