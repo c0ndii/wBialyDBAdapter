@@ -1,37 +1,42 @@
-import { DatabaseTypes, type DatabaseEnum } from "@/api/types"
-import { createContext, useMemo, useState, type PropsWithChildren } from "react"
+import { DatabaseTypes, type DatabaseEnum } from "@/api/types";
+import {
+  createContext,
+  useMemo,
+  useState,
+  type PropsWithChildren,
+} from "react";
 
 type DatabaseContextValue = {
-  databaseType: DatabaseEnum
-  setDatabaseType: (value: DatabaseEnum) => void
-}
+  databaseType: DatabaseEnum;
+  setDatabaseType: (value: DatabaseEnum) => void;
+};
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const DatabaseContext = createContext<DatabaseContextValue | undefined>(
-  undefined
-)
+  undefined,
+);
 
 type DatabaseProviderProps = {
-  defaultType?: DatabaseEnum
-}
+  defaultType?: DatabaseEnum;
+};
 
 export function DatabaseProvider({
-  defaultType = DatabaseTypes.NoSQL,
+  defaultType = DatabaseTypes.ObjectRelational,
   children,
 }: PropsWithChildren<DatabaseProviderProps>) {
-  const [databaseType, setDatabaseType] = useState<DatabaseEnum>(defaultType)
+  const [databaseType, setDatabaseType] = useState<DatabaseEnum>(defaultType);
 
   const value = useMemo(
     () => ({
       databaseType,
       setDatabaseType,
     }),
-    [databaseType]
-  )
+    [databaseType],
+  );
 
   return (
     <DatabaseContext.Provider value={value}>
       {children}
     </DatabaseContext.Provider>
-  )
+  );
 }

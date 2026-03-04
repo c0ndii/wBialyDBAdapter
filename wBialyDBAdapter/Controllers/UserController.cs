@@ -26,14 +26,39 @@ namespace wBialyDBAdapter.Controllers
             return Ok(await _userService.GetUsers(User.GetUserId()));
         }
 
-        [HttpGet("/{id}")]
+        [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             return Ok(await _userService.GetUserAsync(id));
         }
 
-        [HttpPost("/login")]
+        [HttpGet("me")]
+        [Authorize]
+        public IActionResult GetCurrentUser()
+        {
+            var id = HttpContext.User.Claims
+                .FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            var username = HttpContext.User.Claims
+                .FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
+
+            return Ok(new UserGetDto
+            {
+                Id = int.Parse(id),
+                Username = username
+            });
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("MyCookieAuth");
+            return Ok();
+        }
+
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginInput input)
         {
             var result = await _userService.Login(input);
@@ -52,7 +77,7 @@ namespace wBialyDBAdapter.Controllers
             return Ok();
         }
 
-        [HttpPost("/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegisterInput input)
         {
             await _userService.Register(input);

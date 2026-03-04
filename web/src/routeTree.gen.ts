@@ -13,6 +13,9 @@ import { createFileRoute } from '@tanstack/react-router'
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RegisterIndexLazyRouteImport = createFileRoute('/register/')()
+const MessagesIndexLazyRouteImport = createFileRoute('/messages/')()
+const LoginIndexLazyRouteImport = createFileRoute('/login/')()
 const GastrosIndexLazyRouteImport = createFileRoute('/gastros/')()
 const GastrosGastroIdLazyRouteImport = createFileRoute('/gastros/$gastroId')()
 const EventsEventIdLazyRouteImport = createFileRoute('/events/$eventId')()
@@ -22,6 +25,25 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegisterIndexLazyRoute = RegisterIndexLazyRouteImport.update({
+  id: '/register/',
+  path: '/register/',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/register/index.lazy').then((d) => d.Route),
+)
+const MessagesIndexLazyRoute = MessagesIndexLazyRouteImport.update({
+  id: '/messages/',
+  path: '/messages/',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/messages/index.lazy').then((d) => d.Route),
+)
+const LoginIndexLazyRoute = LoginIndexLazyRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/login/index.lazy').then((d) => d.Route))
 const GastrosIndexLazyRoute = GastrosIndexLazyRouteImport.update({
   id: '/gastros/',
   path: '/gastros/',
@@ -47,12 +69,18 @@ export interface FileRoutesByFullPath {
   '/events/$eventId': typeof EventsEventIdLazyRoute
   '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
   '/gastros': typeof GastrosIndexLazyRoute
+  '/login': typeof LoginIndexLazyRoute
+  '/messages': typeof MessagesIndexLazyRoute
+  '/register': typeof RegisterIndexLazyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/events/$eventId': typeof EventsEventIdLazyRoute
   '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
   '/gastros': typeof GastrosIndexLazyRoute
+  '/login': typeof LoginIndexLazyRoute
+  '/messages': typeof MessagesIndexLazyRoute
+  '/register': typeof RegisterIndexLazyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -60,13 +88,38 @@ export interface FileRoutesById {
   '/events/$eventId': typeof EventsEventIdLazyRoute
   '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
   '/gastros/': typeof GastrosIndexLazyRoute
+  '/login/': typeof LoginIndexLazyRoute
+  '/messages/': typeof MessagesIndexLazyRoute
+  '/register/': typeof RegisterIndexLazyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/events/$eventId' | '/gastros/$gastroId' | '/gastros'
+  fullPaths:
+    | '/'
+    | '/events/$eventId'
+    | '/gastros/$gastroId'
+    | '/gastros'
+    | '/login'
+    | '/messages'
+    | '/register'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/events/$eventId' | '/gastros/$gastroId' | '/gastros'
-  id: '__root__' | '/' | '/events/$eventId' | '/gastros/$gastroId' | '/gastros/'
+  to:
+    | '/'
+    | '/events/$eventId'
+    | '/gastros/$gastroId'
+    | '/gastros'
+    | '/login'
+    | '/messages'
+    | '/register'
+  id:
+    | '__root__'
+    | '/'
+    | '/events/$eventId'
+    | '/gastros/$gastroId'
+    | '/gastros/'
+    | '/login/'
+    | '/messages/'
+    | '/register/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -74,6 +127,9 @@ export interface RootRouteChildren {
   EventsEventIdLazyRoute: typeof EventsEventIdLazyRoute
   GastrosGastroIdLazyRoute: typeof GastrosGastroIdLazyRoute
   GastrosIndexLazyRoute: typeof GastrosIndexLazyRoute
+  LoginIndexLazyRoute: typeof LoginIndexLazyRoute
+  MessagesIndexLazyRoute: typeof MessagesIndexLazyRoute
+  RegisterIndexLazyRoute: typeof RegisterIndexLazyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -83,6 +139,27 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register/': {
+      id: '/register/'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterIndexLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages/': {
+      id: '/messages/'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesIndexLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/gastros/': {
@@ -114,6 +191,9 @@ const rootRouteChildren: RootRouteChildren = {
   EventsEventIdLazyRoute: EventsEventIdLazyRoute,
   GastrosGastroIdLazyRoute: GastrosGastroIdLazyRoute,
   GastrosIndexLazyRoute: GastrosIndexLazyRoute,
+  LoginIndexLazyRoute: LoginIndexLazyRoute,
+  MessagesIndexLazyRoute: MessagesIndexLazyRoute,
+  RegisterIndexLazyRoute: RegisterIndexLazyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

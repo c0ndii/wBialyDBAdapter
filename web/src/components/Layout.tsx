@@ -1,8 +1,14 @@
-import { AppBar, Box, Toolbar, Typography } from "@mui/material"
-import { Link, Outlet } from "@tanstack/react-router"
-import { DatabasePicker } from "./DatabasePicker"
+import { useLogout } from "@/api/hooks/user";
+import { useAuth } from "@/hooks/useAuth";
+import { AppBar, Box, Toolbar, Typography } from "@mui/material";
+import { Link, Outlet } from "@tanstack/react-router";
+import { CurrentUserChip } from "./CurrentUserChip";
+import { ThemePicker } from "./ThemePicker";
 
 export const Layout = () => {
+  const { isAuthenticated, me } = useAuth();
+  const logout = useLogout();
+
   return (
     <Box
       sx={{
@@ -49,7 +55,7 @@ export const Layout = () => {
                 textDecoration: "none",
                 letterSpacing: 0.5,
                 color: theme.palette.getContrastText(
-                  theme.palette.primary.main
+                  theme.palette.primary.main,
                 ),
                 "&:hover": { opacity: 0.9 },
               })}
@@ -64,15 +70,92 @@ export const Layout = () => {
                 textDecoration: "none",
                 fontWeight: 600,
                 color: theme.palette.getContrastText(
-                  theme.palette.primary.main
+                  theme.palette.primary.main,
                 ),
                 "&:hover": { opacity: 0.9 },
               })}
             >
               Gastro
             </Typography>
+            <Typography
+              component={Link}
+              variant="body1"
+              to="/messages"
+              sx={(theme) => ({
+                textDecoration: "none",
+                fontWeight: 600,
+                color: theme.palette.getContrastText(
+                  theme.palette.primary.main,
+                ),
+                "&:hover": { opacity: 0.9 },
+              })}
+            >
+              Messages
+            </Typography>
           </Box>
-          <DatabasePicker />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2.5 }}>
+            {!isAuthenticated && (
+              <>
+                <Typography
+                  component={Link}
+                  variant="body1"
+                  to="/register"
+                  sx={(theme) => ({
+                    textDecoration: "none",
+                    fontWeight: 600,
+                    color: theme.palette.getContrastText(
+                      theme.palette.primary.main,
+                    ),
+                    "&:hover": { opacity: 0.9 },
+                  })}
+                >
+                  Register
+                </Typography>
+                <Typography
+                  component={Link}
+                  variant="body1"
+                  to="/login"
+                  sx={(theme) => ({
+                    textDecoration: "none",
+                    fontWeight: 600,
+                    color: theme.palette.getContrastText(
+                      theme.palette.primary.main,
+                    ),
+                    "&:hover": { opacity: 0.9 },
+                  })}
+                >
+                  Login
+                </Typography>
+              </>
+            )}
+            {isAuthenticated && (
+              <>
+                <Typography
+                  component="button"
+                  variant="body1"
+                  onClick={() => logout.mutate()}
+                  sx={(theme) => ({
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    textDecoration: "none",
+                    fontWeight: 600,
+                    fontFamily: "inherit",
+                    fontSize: "inherit",
+                    color: theme.palette.getContrastText(
+                      theme.palette.primary.main,
+                    ),
+                    "&:hover": { opacity: 0.9 },
+                  })}
+                >
+                  Logout
+                </Typography>
+                {me?.username && <CurrentUserChip username={me.username} />}
+              </>
+            )}
+            <ThemePicker />
+          </Box>
+          {/* <DatabasePicker /> */}
         </Toolbar>
       </AppBar>
       <Box
@@ -80,7 +163,7 @@ export const Layout = () => {
           display: "flex",
           flexDirection: "column",
           flex: 1,
-          backgroundColor: "transparent",
+          backgroundColor: (theme) => theme.palette.background.default,
           px: 2,
           py: 3,
         }}
@@ -92,6 +175,7 @@ export const Layout = () => {
             mx: "auto",
             display: "flex",
             flexDirection: "column",
+            flex: 1,
             gap: 3,
           }}
         >
@@ -99,5 +183,5 @@ export const Layout = () => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};

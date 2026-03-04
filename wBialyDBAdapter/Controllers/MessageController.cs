@@ -47,7 +47,7 @@ namespace wBialyDBAdapter.Controllers
             return Ok();
         }
 
-        [HttpPut("/editors")]
+        [HttpPut("editors")]
         [Authorize]
         public async Task<IActionResult> UpdateEditors([FromBody] UpdateMessageEditorsInput input)
         {
