@@ -8,15 +8,24 @@ import {
   CardContent,
   CardHeader,
   TextField,
+  Typography,
 } from "@mui/material";
 import { createLazyFileRoute } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { useForm } from "react-hook-form";
+
+const PASSWORD_MANAGER_STORAGE_KEY = "security.passwordManagerEnabled";
 
 export const Route = createLazyFileRoute("/login/")({
   component: LoginView,
 });
 
 function LoginView() {
+  const isPasswordManagerEnabled = useMemo(() => {
+    const stored = localStorage.getItem(PASSWORD_MANAGER_STORAGE_KEY);
+    return stored == null ? true : stored === "true";
+  }, []);
+
   const form = useForm<LoginSchema>({
     defaultValues: {
       login: "",
@@ -50,13 +59,13 @@ function LoginView() {
             component="form"
             sx={{ display: "flex", flexDirection: "column", gap: 2 }}
             noValidate
-            autoComplete="off"
+            autoComplete={isPasswordManagerEnabled ? "on" : "off"}
             onSubmit={handleLogin}
           >
             <TextField
               id="login"
               label="Login"
-              autoComplete="username"
+              autoComplete={isPasswordManagerEnabled ? "username" : "off"}
               {...form.register("login")}
               error={!!form.formState.errors.login}
               helperText={form.formState.errors.login?.message}
@@ -66,7 +75,9 @@ function LoginView() {
               id="password"
               label="Password"
               type="password"
-              autoComplete="new-password"
+              autoComplete={
+                isPasswordManagerEnabled ? "current-password" : "new-password"
+              }
               {...form.register("password")}
               error={!!form.formState.errors.password}
               helperText={form.formState.errors.password?.message}
@@ -76,6 +87,13 @@ function LoginView() {
             <Button type="submit" variant="contained">
               Login
             </Button>
+            {login.isError && (
+              <Typography variant="body2" color="error">
+                {login.error instanceof Error
+                  ? login.error.message
+                  : "Login failed"}
+              </Typography>
+            )}
           </Box>
         </CardContent>
       </Card>

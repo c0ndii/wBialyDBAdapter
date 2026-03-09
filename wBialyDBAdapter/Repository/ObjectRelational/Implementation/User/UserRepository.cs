@@ -31,22 +31,26 @@ namespace wBialyDBAdapter.Repository.ObjectRelational.Implementation.User
 
         public async Task Register(UserRegisterInput input)
         {
-            await _context.Users.AddAsync(new Database.ObjectRelational.Entities.User.User
+            var user = new Database.ObjectRelational.Entities.User.User
             {
                 Login = input.Login,
                 Password = input.Password,
                 Username = input.Username,
+            };
+
+            await _context.Users.AddAsync(user);
+
+            await _context.SaveChangesAsync();
+
+            await _context.UserSecurityProfiles.AddAsync(new Database.ObjectRelational.Entities.User.UserSecurityProfile
+            {
+                UserId = user.UserId,
+                IsLockoutEnabled = true,
+                MaxFailedLoginAttempts = 5,
+                IsPasswordManagerEnabled = true,
             });
 
             await _context.SaveChangesAsync();
-        }
-
-        public async Task<UserGetDto?> Login(UserLoginInput input)
-        {
-            return await _context.Users
-                .Where(x => x.Login == input.Login && x.Password == input.Password)
-                .Select(x => new UserGetDto { Id = x.UserId, Username = x.Username })
-                .FirstOrDefaultAsync();
         }
     }
 }

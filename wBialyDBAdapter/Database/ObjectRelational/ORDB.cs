@@ -14,6 +14,8 @@ namespace wBialyDBAdapter.Database.ObjectRelational
         public DbSet<Tag_Gastro> GastroTags { get; set; }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserSecurityProfile> UserSecurityProfiles { get; set; }
+        public DbSet<LoginAttemptAudit> LoginAttemptAudits { get; set; }
         public DbSet<Message> Messages { get; set; }
 
         public ORDB(DbContextOptions<ORDB> options) : base(options)
@@ -28,7 +30,7 @@ namespace wBialyDBAdapter.Database.ObjectRelational
 
                 entity.HasMany(e => e.EventTags)
                       .WithMany(t => t.Events)
-                      .UsingEntity(j => j.ToTable("EventTagsJoin")); 
+                      .UsingEntity(j => j.ToTable("EventTagsJoin"));
             });
 
             modelBuilder.Entity<Gastro>(entity =>
@@ -37,7 +39,7 @@ namespace wBialyDBAdapter.Database.ObjectRelational
 
                 entity.HasMany(g => g.GastroTags)
                       .WithMany(t => t.Gastros)
-                      .UsingEntity(j => j.ToTable("GastroTagsJoin")); 
+                      .UsingEntity(j => j.ToTable("GastroTagsJoin"));
             });
 
             modelBuilder.Entity<Tag_Event>()
@@ -49,10 +51,33 @@ namespace wBialyDBAdapter.Database.ObjectRelational
             modelBuilder.Entity<User>()
                 .HasKey(x => x.UserId);
 
+            modelBuilder.Entity<UserSecurityProfile>(entity =>
+            {
+                entity.HasKey(x => x.UserSecurityProfileId);
+                entity.HasIndex(x => x.UserId).IsUnique();
+
+                entity.HasOne(x => x.User)
+                      .WithOne(x => x.SecurityProfile)
+                      .HasForeignKey<UserSecurityProfile>(x => x.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            modelBuilder.Entity<LoginAttemptAudit>(entity =>
+            {
+                entity.HasKey(x => x.LoginAttemptAuditId);
+                entity.HasOne(x => x.UserSecurityProfile)
+                      .WithMany(x => x.LoginAttemptAudits)
+                      .HasForeignKey(x => x.UserSecurityProfileId)
+                      .OnDelete(DeleteBehavior.SetNull);
+
+                entity.HasIndex(x => x.AttemptedAtUtc);
+                entity.HasIndex(x => x.LoginIdentifier);
+            });
+
             modelBuilder.Entity<Message>(entity =>
             {
                 entity.HasOne(m => m.User)
-                      .WithMany() 
+                      .WithMany()
                       .HasForeignKey(m => m.UserId)
                       .OnDelete(DeleteBehavior.Restrict);
 

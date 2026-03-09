@@ -49,6 +49,48 @@ export type LoginUser = {
   password: string;
 };
 
+export type UserSecuritySettings = {
+  isLockoutEnabled: boolean;
+  maxFailedLoginAttempts: number;
+  isPasswordManagerEnabled: boolean;
+};
+
+export type UserSecurityStats = {
+  lastFailedLoginAtUtc: string | null;
+  lastSuccessfulLoginAtUtc: string | null;
+  failedLoginCountSinceLastSuccess: number;
+  failedLoginCountTotal: number;
+  successfulLoginCount: number;
+  isLocked: boolean;
+  lockedUntilUtc: string | null;
+  nextAllowedLoginAtUtc: string | null;
+};
+
+export type UserSecurityOverview = {
+  settings: UserSecuritySettings;
+  stats: UserSecurityStats;
+};
+
+export type LoginAuditLog = {
+  id: number;
+  userId: number | null;
+  loginIdentifier: string;
+  attemptedAtUtc: string;
+  isSuccessful: boolean;
+  isExistingUser: boolean;
+  appliedDelaySeconds: number;
+  lockedUntilUtc: string | null;
+  failureCategory: string | null;
+  ipAddress: string | null;
+};
+
+export const LogsScope = {
+  Mine: "mine",
+  All: "all",
+} as const;
+
+export type LogsScopeEnum = (typeof LogsScope)[keyof typeof LogsScope];
+
 export type RegisterUser = Pick<User, "username"> & LoginUser;
 
 export type MessageUser = {

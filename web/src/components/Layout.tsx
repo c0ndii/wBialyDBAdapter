@@ -1,6 +1,7 @@
 import { useLogout } from "@/api/hooks/user";
 import { useAuth } from "@/hooks/useAuth";
-import { AppBar, Box, Toolbar, Typography } from "@mui/material";
+import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
 import { Link, Outlet } from "@tanstack/react-router";
 import { CurrentUserChip } from "./CurrentUserChip";
 import { ThemePicker } from "./ThemePicker";
@@ -150,7 +151,37 @@ export const Layout = () => {
                 >
                   Logout
                 </Typography>
-                {me?.username && <CurrentUserChip username={me.username} />}
+                {me?.username && (
+                  <Typography
+                    component={Link}
+                    variant="body1"
+                    to="/security/settings"
+                    sx={(theme) => ({
+                      textDecoration: "none",
+                      fontWeight: 600,
+                      color: theme.palette.getContrastText(
+                        theme.palette.primary.main,
+                      ),
+                      "&:hover": { opacity: 0.9 },
+                    })}
+                  >
+                    {me?.username && <CurrentUserChip username={me.username} />}
+                  </Typography>
+                )}
+                <IconButton
+                  component={Link}
+                  to="/security/logs"
+                  sx={(theme) => ({
+                    textDecoration: "none",
+                    fontWeight: 600,
+                    color: theme.palette.getContrastText(
+                      theme.palette.primary.main,
+                    ),
+                    "&:hover": { opacity: 0.9 },
+                  })}
+                >
+                  <MonitorHeartIcon />
+                </IconButton>
               </>
             )}
             <ThemePicker />

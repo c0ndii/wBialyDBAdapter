@@ -17,6 +17,8 @@ const RegisterIndexLazyRouteImport = createFileRoute('/register/')()
 const MessagesIndexLazyRouteImport = createFileRoute('/messages/')()
 const LoginIndexLazyRouteImport = createFileRoute('/login/')()
 const GastrosIndexLazyRouteImport = createFileRoute('/gastros/')()
+const SecuritySettingsLazyRouteImport = createFileRoute('/security/settings')()
+const SecurityLogsLazyRouteImport = createFileRoute('/security/logs')()
 const GastrosGastroIdLazyRouteImport = createFileRoute('/gastros/$gastroId')()
 const EventsEventIdLazyRouteImport = createFileRoute('/events/$eventId')()
 
@@ -49,6 +51,18 @@ const GastrosIndexLazyRoute = GastrosIndexLazyRouteImport.update({
   path: '/gastros/',
   getParentRoute: () => rootRouteImport,
 } as any).lazy(() => import('./routes/gastros/index.lazy').then((d) => d.Route))
+const SecuritySettingsLazyRoute = SecuritySettingsLazyRouteImport.update({
+  id: '/security/settings',
+  path: '/security/settings',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() =>
+  import('./routes/security/settings.lazy').then((d) => d.Route),
+)
+const SecurityLogsLazyRoute = SecurityLogsLazyRouteImport.update({
+  id: '/security/logs',
+  path: '/security/logs',
+  getParentRoute: () => rootRouteImport,
+} as any).lazy(() => import('./routes/security/logs.lazy').then((d) => d.Route))
 const GastrosGastroIdLazyRoute = GastrosGastroIdLazyRouteImport.update({
   id: '/gastros/$gastroId',
   path: '/gastros/$gastroId',
@@ -68,6 +82,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/events/$eventId': typeof EventsEventIdLazyRoute
   '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
+  '/security/logs': typeof SecurityLogsLazyRoute
+  '/security/settings': typeof SecuritySettingsLazyRoute
   '/gastros': typeof GastrosIndexLazyRoute
   '/login': typeof LoginIndexLazyRoute
   '/messages': typeof MessagesIndexLazyRoute
@@ -77,6 +93,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/events/$eventId': typeof EventsEventIdLazyRoute
   '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
+  '/security/logs': typeof SecurityLogsLazyRoute
+  '/security/settings': typeof SecuritySettingsLazyRoute
   '/gastros': typeof GastrosIndexLazyRoute
   '/login': typeof LoginIndexLazyRoute
   '/messages': typeof MessagesIndexLazyRoute
@@ -87,6 +105,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/events/$eventId': typeof EventsEventIdLazyRoute
   '/gastros/$gastroId': typeof GastrosGastroIdLazyRoute
+  '/security/logs': typeof SecurityLogsLazyRoute
+  '/security/settings': typeof SecuritySettingsLazyRoute
   '/gastros/': typeof GastrosIndexLazyRoute
   '/login/': typeof LoginIndexLazyRoute
   '/messages/': typeof MessagesIndexLazyRoute
@@ -98,6 +118,8 @@ export interface FileRouteTypes {
     | '/'
     | '/events/$eventId'
     | '/gastros/$gastroId'
+    | '/security/logs'
+    | '/security/settings'
     | '/gastros'
     | '/login'
     | '/messages'
@@ -107,6 +129,8 @@ export interface FileRouteTypes {
     | '/'
     | '/events/$eventId'
     | '/gastros/$gastroId'
+    | '/security/logs'
+    | '/security/settings'
     | '/gastros'
     | '/login'
     | '/messages'
@@ -116,6 +140,8 @@ export interface FileRouteTypes {
     | '/'
     | '/events/$eventId'
     | '/gastros/$gastroId'
+    | '/security/logs'
+    | '/security/settings'
     | '/gastros/'
     | '/login/'
     | '/messages/'
@@ -126,6 +152,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   EventsEventIdLazyRoute: typeof EventsEventIdLazyRoute
   GastrosGastroIdLazyRoute: typeof GastrosGastroIdLazyRoute
+  SecurityLogsLazyRoute: typeof SecurityLogsLazyRoute
+  SecuritySettingsLazyRoute: typeof SecuritySettingsLazyRoute
   GastrosIndexLazyRoute: typeof GastrosIndexLazyRoute
   LoginIndexLazyRoute: typeof LoginIndexLazyRoute
   MessagesIndexLazyRoute: typeof MessagesIndexLazyRoute
@@ -169,6 +197,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GastrosIndexLazyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/security/settings': {
+      id: '/security/settings'
+      path: '/security/settings'
+      fullPath: '/security/settings'
+      preLoaderRoute: typeof SecuritySettingsLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/security/logs': {
+      id: '/security/logs'
+      path: '/security/logs'
+      fullPath: '/security/logs'
+      preLoaderRoute: typeof SecurityLogsLazyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/gastros/$gastroId': {
       id: '/gastros/$gastroId'
       path: '/gastros/$gastroId'
@@ -190,6 +232,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   EventsEventIdLazyRoute: EventsEventIdLazyRoute,
   GastrosGastroIdLazyRoute: GastrosGastroIdLazyRoute,
+  SecurityLogsLazyRoute: SecurityLogsLazyRoute,
+  SecuritySettingsLazyRoute: SecuritySettingsLazyRoute,
   GastrosIndexLazyRoute: GastrosIndexLazyRoute,
   LoginIndexLazyRoute: LoginIndexLazyRoute,
   MessagesIndexLazyRoute: MessagesIndexLazyRoute,
