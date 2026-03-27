@@ -21,9 +21,24 @@ namespace wBialyDBAdapter.Services.Implementation.Auth
             await _userRepository.Register(input);
         }
 
-        public async Task<LoginAttemptResultDto> Login(UserLoginInput input, string? ipAddress, string? userAgent)
+        public async Task<LoginChallengeDto> GetChallenge(string login)
         {
-            return await _userSecurityService.Login(input, ipAddress, userAgent);
+            return await _userSecurityService.GetChallenge(login);
+        }
+
+        public async Task<LoginAttemptResultDto> VerifyPartialLogin(PartialLoginInput input, string? ipAddress, string? userAgent)
+        {
+            return await _userSecurityService.VerifyPartialLogin(input, ipAddress, userAgent);
+        }
+
+        public async Task<bool> UpdatePartialPassword(int userId, string masterPassword, string newPartialPassword, int slotIndex)
+        {
+            return await _userSecurityService.UpdatePartialPasswordSlot(userId, masterPassword, newPartialPassword, slotIndex);
+        }
+
+        public async Task<bool> ChangeMasterPassword(int userId, string oldPassword, string newPassword)
+        {
+            return await _userSecurityService.ChangeMasterPassword(userId, oldPassword, newPassword);
         }
     }
 }

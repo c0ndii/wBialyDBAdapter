@@ -139,32 +139,32 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<ORDB>();
-    if (db != null)
-    {
-        db.Database.Migrate();
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<ORDB>();
+//    if (db != null)
+//    {
+//        db.Database.Migrate();
+//    }
+//}
 
-using (var scope = app.Services.CreateScope())
-{
-    var conn = scope.ServiceProvider.GetRequiredService<IOptions<RelationalDBSettings>>();
-    if (conn != null)
-    {
-        await RDBHelper.EnsureRelationalDatabaseInitializedAsync(conn.Value.ConnectionString);
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var conn = scope.ServiceProvider.GetRequiredService<IOptions<RelationalDBSettings>>();
+//    if (conn != null)
+//    {
+//        await RDBHelper.EnsureRelationalDatabaseInitializedAsync(conn.Value.ConnectionString);
+//    }
+//}
 
-using (var scope = app.Services.CreateScope())
-{
-    var noSqlDb = scope.ServiceProvider.GetRequiredService<NoSQLDB>();
-    if (noSqlDb != null)
-    {
-        await wBialyDBAdapter.Database.NoSQL.NoSQLSeeder.SeedAsync(noSqlDb);
-    }
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var noSqlDb = scope.ServiceProvider.GetRequiredService<NoSQLDB>();
+//    if (noSqlDb != null)
+//    {
+//        await wBialyDBAdapter.Database.NoSQL.NoSQLSeeder.SeedAsync(noSqlDb);
+//    }
+//}
 
 app.UseHttpsRedirection();
 

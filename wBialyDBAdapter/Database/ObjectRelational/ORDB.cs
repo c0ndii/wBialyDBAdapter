@@ -17,6 +17,7 @@ namespace wBialyDBAdapter.Database.ObjectRelational
         public DbSet<UserSecurityProfile> UserSecurityProfiles { get; set; }
         public DbSet<LoginAttemptAudit> LoginAttemptAudits { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<PartialPassword> PartialPasswords { get; set; }
 
         public ORDB(DbContextOptions<ORDB> options) : base(options)
         {
@@ -60,7 +61,14 @@ namespace wBialyDBAdapter.Database.ObjectRelational
                       .WithOne(x => x.SecurityProfile)
                       .HasForeignKey<UserSecurityProfile>(x => x.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasMany(x => x.PartialPasswords)
+                    .WithOne(x => x.UserSecurityProfile)
+                    .HasForeignKey(x => x.UserSecurityProfileId)
+                    .OnDelete(DeleteBehavior.Cascade);
             });
+
+            modelBuilder.Entity<PartialPassword>().HasKey(x => x.PartialPasswordId);
 
             modelBuilder.Entity<LoginAttemptAudit>(entity =>
             {

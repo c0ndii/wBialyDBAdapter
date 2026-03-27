@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace wBialyDBAdapter.Database.ObjectRelational.Entities.User
 {
     public class UserSecurityProfile
@@ -19,5 +21,6 @@ namespace wBialyDBAdapter.Database.ObjectRelational.Entities.User
 
         public User User { get; set; } = null!;
         public ICollection<LoginAttemptAudit> LoginAttemptAudits { get; set; } = [];
+        public ICollection<PartialPassword> PartialPasswords { get; set; } = new HashSet<PartialPassword>();
     }
 }

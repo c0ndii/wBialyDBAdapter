@@ -5,6 +5,12 @@ namespace wBialyDBAdapter.Services.Auth
     public interface IAuthService
     {
         Task Register(UserRegisterInput input);
-        Task<LoginAttemptResultDto> Login(UserLoginInput input, string? ipAddress, string? userAgent);
+
+        Task<LoginChallengeDto> GetChallenge(string login);
+
+        Task<LoginAttemptResultDto> VerifyPartialLogin(PartialLoginInput input, string? ipAddress, string? userAgent);
+
+        Task<bool> UpdatePartialPassword(int userId, string masterPassword, string newPartialPassword, int slotIndex);
+        Task<bool> ChangeMasterPassword(int userId, string oldPassword, string newPassword);
     }
 }

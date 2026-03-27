@@ -519,6 +519,42 @@ namespace wBialyDBAdapter.Migrations
                     b.ToTable("LoginAttemptAudits");
                 });
 
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.PartialPassword", b =>
+                {
+                    b.Property<int>("PartialPasswordId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PartialPasswordId"));
+
+                    b.Property<string>("CharacterHashes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PasswordLength")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RequiredPositions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SlotNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserSecurityProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PartialPasswordId");
+
+                    b.HasIndex("UserSecurityProfileId");
+
+                    b.ToTable("PartialPasswords");
+                });
+
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -659,6 +695,17 @@ namespace wBialyDBAdapter.Migrations
                     b.Navigation("UserSecurityProfile");
                 });
 
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.PartialPassword", b =>
+                {
+                    b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", "UserSecurityProfile")
+                        .WithMany("PartialPasswords")
+                        .HasForeignKey("UserSecurityProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserSecurityProfile");
+                });
+
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", b =>
                 {
                     b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.User.User", "User")
@@ -678,6 +725,8 @@ namespace wBialyDBAdapter.Migrations
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", b =>
                 {
                     b.Navigation("LoginAttemptAudits");
+
+                    b.Navigation("PartialPasswords");
                 });
 #pragma warning restore 612, 618
         }

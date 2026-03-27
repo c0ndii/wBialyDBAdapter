@@ -12,7 +12,7 @@ using wBialyDBAdapter.Database.ObjectRelational;
 namespace wBialyDBAdapter.Migrations
 {
     [DbContext(typeof(ORDB))]
-    [Migration("20251218201521_init")]
+    [Migration("20260327195016_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -107,6 +107,21 @@ namespace wBialyDBAdapter.Migrations
                             GastroTagsTagID = 13,
                             GastrosPostId = 10
                         });
+                });
+
+            modelBuilder.Entity("MessageUser", b =>
+                {
+                    b.Property<int>("CanModifyUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MessageId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CanModifyUserId", "MessageId");
+
+                    b.HasIndex("MessageId");
+
+                    b.ToTable("CanModify", (string)null);
                 });
 
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Event", b =>
@@ -285,6 +300,38 @@ namespace wBialyDBAdapter.Migrations
                         });
                 });
 
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Message.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LatestModifyUsername")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Event", b =>
                 {
                     b.Property<int>("TagID")
@@ -425,6 +472,166 @@ namespace wBialyDBAdapter.Migrations
                         });
                 });
 
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.LoginAttemptAudit", b =>
+                {
+                    b.Property<int>("LoginAttemptAuditId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoginAttemptAuditId"));
+
+                    b.Property<int>("AppliedDelaySeconds")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("AttemptedAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FailureCategory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IpAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsExistingUser")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsSuccessful")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LockedUntilUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LoginIdentifier")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserAgent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserSecurityProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoginAttemptAuditId");
+
+                    b.HasIndex("AttemptedAtUtc");
+
+                    b.HasIndex("LoginIdentifier");
+
+                    b.HasIndex("UserSecurityProfileId");
+
+                    b.ToTable("LoginAttemptAudits");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.PartialPassword", b =>
+                {
+                    b.Property<int>("PartialPasswordId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PartialPasswordId"));
+
+                    b.Property<string>("CharacterHashes")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("PasswordLength")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RequiredPositions")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Salt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SlotNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserSecurityProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PartialPasswordId");
+
+                    b.HasIndex("UserSecurityProfileId");
+
+                    b.ToTable("PartialPasswords");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", b =>
+                {
+                    b.Property<int>("UserSecurityProfileId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserSecurityProfileId"));
+
+                    b.Property<int>("FailedLoginCountSinceLastSuccess")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FailedLoginCountTotal")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsLockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPasswordManagerEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastFailedLoginAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LastSuccessfulLoginAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("LockedUntilUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MaxFailedLoginAttempts")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("NextAllowedLoginAtUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("SuccessfulLoginCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserSecurityProfileId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("UserSecurityProfiles");
+                });
+
             modelBuilder.Entity("EventTag_Event", b =>
                 {
                     b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.Tag_Event", null)
@@ -453,6 +660,76 @@ namespace wBialyDBAdapter.Migrations
                         .HasForeignKey("GastrosPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MessageUser", b =>
+                {
+                    b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.User.User", null)
+                        .WithMany()
+                        .HasForeignKey("CanModifyUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.Message.Message", null)
+                        .WithMany()
+                        .HasForeignKey("MessageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.Message.Message", b =>
+                {
+                    b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.User.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.LoginAttemptAudit", b =>
+                {
+                    b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", "UserSecurityProfile")
+                        .WithMany("LoginAttemptAudits")
+                        .HasForeignKey("UserSecurityProfileId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("UserSecurityProfile");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.PartialPassword", b =>
+                {
+                    b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", "UserSecurityProfile")
+                        .WithMany("PartialPasswords")
+                        .HasForeignKey("UserSecurityProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserSecurityProfile");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", b =>
+                {
+                    b.HasOne("wBialyDBAdapter.Database.ObjectRelational.Entities.User.User", "User")
+                        .WithOne("SecurityProfile")
+                        .HasForeignKey("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.User", b =>
+                {
+                    b.Navigation("SecurityProfile");
+                });
+
+            modelBuilder.Entity("wBialyDBAdapter.Database.ObjectRelational.Entities.User.UserSecurityProfile", b =>
+                {
+                    b.Navigation("LoginAttemptAudits");
+
+                    b.Navigation("PartialPasswords");
                 });
 #pragma warning restore 612, 618
         }
