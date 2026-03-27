@@ -1,55 +1,56 @@
 services:
-  backend:
-    build:
-      context: ./wBialyDBAdapter
-      dockerfile: Dockerfile
-    container_name: wbialy-backend
-    restart: always
-    environment:
-      ASPNETCORE_URLS: http://0.0.0.0:8080
-      Databases__RelationalDatabaseSettings__ConnectionString: Server=relational-db,1433;Database=MyRDb;User Id=sa;Password=Strong!Pass123;Encrypt=False;
-      Databases__ObjectRelationalDatabaseSettings__ConnectionString: Server=object-relational-db,1433;Database=MyORDb;User Id=sa;Password=Strong!Pass123;Encrypt=False;
-      Databases__NoSQLDatabaseSettings__ConnectionString: mongodb://admin:admin123@mongo:27017/?authSource=admin
-      Databases__NoSQLDatabaseSettings__DatabaseName: MyNoSqlDb
-    depends_on:
-      relational-db:
-        condition: service_healthy
-      object-relational-db:
-        condition: service_healthy
-      mongo:
-        condition: service_healthy
-    ports:
-      - "8080:8080"
+  # backend:
+  #   build:
+  #     context: ./wBialyDBAdapter
+  #     dockerfile: Dockerfile
+  #   container_name: wbialy-backend
+  #   restart: always
+  #   environment:
+  #     ASPNETCORE_URLS: http://0.0.0.0:8080
+  #     Databases__RelationalDatabaseSettings__ConnectionString: Server=relational-db,1433;Database=MyRDb;User Id=sa;Password=Strong!Pass123;Encrypt=False;
+  #     Databases__ObjectRelationalDatabaseSettings__ConnectionString: Server=object-relational-db,1433;Database=MyORDb;User Id=sa;Password=Strong!Pass123;Encrypt=False;
+  #     Databases__NoSQLDatabaseSettings__ConnectionString: mongodb://admin:admin123@mongo:27017/?authSource=admin
+  #     Databases__NoSQLDatabaseSettings__DatabaseName: MyNoSqlDb
+  #   depends_on:
+  #     # relational-db:
+  #     #   condition: service_healthy
+  #     object-relational-db:
+  #       condition: service_healthy
+  #     # mongo:
+  #     #   condition: service_healthy
+  #   ports:
+  #     - "8080:8080"
 
-  frontend:
-    build:
-      context: ./web
-      dockerfile: Dockerfile
-      args:
-        VITE_API_BASE: http://localhost:8080
-    container_name: wbialy-frontend
-    restart: always
-    depends_on:
-      - backend
-    ports:
-      - "3000:80"
-  relational-db:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: relational-db
-    restart: always
-    environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "Strong!Pass123"
-    ports:
-      - "1433:1433"
-    volumes:
-      - relational-data:/var/opt/mssql
-    healthcheck:
-      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/1433 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 30
-      start_period: 20s
+  # frontend:
+    # build:
+    #   context: ./web
+    #   dockerfile: Dockerfile
+    #   args:
+    #     VITE_API_BASE: http://localhost:8080
+    # container_name: wbialy-frontend
+    # restart: always
+    # depends_on:
+    #   - backend
+    # ports:
+    #   - "3000:80"
+  
+  # relational-db:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: relational-db
+  #   restart: always
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     MSSQL_SA_PASSWORD: "Strong!Pass123"
+  #   ports:
+  #     - "1433:1433"
+  #   volumes:
+  #     - relational-data:/var/opt/mssql
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "echo > /dev/tcp/localhost/1433 || exit 1"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 30
+  #     start_period: 20s
 
   object-relational-db:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -69,25 +70,25 @@ services:
       retries: 30
       start_period: 20s
 
-  mongo:
-    image: mongo:7.0
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_DATABASE: MyNoSqlDb
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin123
-    volumes:
-      - mongo-data:/data/db
-    healthcheck:
-      test: ["CMD-SHELL", "echo > /dev/tcp/localhost/27017 || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 30
-      start_period: 10s
+  # mongo:
+    # image: mongo:7.0
+    # container_name: mongodb
+    # ports:
+    #   - "27017:27017"
+    # environment:
+    #   MONGO_INITDB_DATABASE: MyNoSqlDb
+    #   MONGO_INITDB_ROOT_USERNAME: admin
+    #   MONGO_INITDB_ROOT_PASSWORD: admin123
+    # volumes:
+    #   - mongo-data:/data/db
+    # healthcheck:
+    #   test: ["CMD-SHELL", "echo > /dev/tcp/localhost/27017 || exit 1"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 30
+    #   start_period: 10s
 
 volumes:
-  relational-data:
+  # relational-data:
   objectrelational-data:
-  mongo-data:
+  # mongo-data:

@@ -3,14 +3,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { apiUrl } from "../client";
 import {
+  type ChangeMasterPasswordRequest,
   LogsScope,
   type LoginAuditLog,
-  type LoginUser,
+  type LoginChallengeRequest,
+  type LoginChallengeResponse,
   type LogsScopeEnum,
   type RegisterUser,
   type User,
   type UserSecurityOverview,
   type UserSecuritySettings,
+  type VerifyLoginRequest,
 } from "../types";
 
 export const useUsers = () => {
@@ -107,14 +110,63 @@ export const useRegister = () => {
 };
 
 export const useLogin = () => {
+  return useMutation<
+    LoginChallengeResponse,
+    unknown,
+    LoginChallengeRequest,
+    unknown
+  >({
+    mutationKey: ["login"],
+    mutationFn: async (data) => {
+      const res = await fetch(
+        apiUrl(`/api/Auth/login/challenge/${encodeURIComponent(data.login)}`),
+        {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        },
+      );
+
+      if (!res.ok) {
+        let message = "Nie udało się pobrać challenge logowania.";
+
+        try {
+          const parsed = (await res.json()) as {
+            message?: string;
+          };
+
+          if (parsed.message) {
+            message = parsed.message;
+          }
+        } catch {
+          const text = await res.text();
+          if (text) {
+            message = text;
+          }
+        }
+
+        const normalized = message.toLowerCase();
+        const isInvalidLogin =
+          normalized.includes("logowanie niemozliwe") ||
+          (normalized.includes("logowanie") && normalized.includes("niemo"));
+
+        throw new Error(isInvalidLogin ? "Invalid login." : message);
+      }
+
+      return (await res.json()) as LoginChallengeResponse;
+    },
+  });
+};
+
+export const useVerifyLogin = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { refreshAuth } = useAuth();
 
-  return useMutation<number, unknown, LoginUser, unknown>({
-    mutationKey: ["login"],
+  return useMutation<number, unknown, VerifyLoginRequest, unknown>({
+    mutationKey: ["verify-login"],
     mutationFn: async (data) => {
-      const res = await fetch(apiUrl("/api/Auth/login"), {
+      const res = await fetch(apiUrl("/api/Auth/login/verify"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -267,6 +319,45 @@ export const useUpdateSecuritySettings = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["user-security-overview"] });
+    },
+  });
+};
+
+export const useChangeMasterPassword = () => {
+  return useMutation<number, unknown, ChangeMasterPasswordRequest, unknown>({
+    mutationKey: ["change-master-password"],
+    mutationFn: async (data) => {
+      const res = await fetch(apiUrl("/api/Auth/password/change-master"), {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        let message = "Nie udało się zmienić hasła.";
+
+        try {
+          const parsed = (await res.json()) as {
+            message?: string;
+          };
+
+          if (parsed.message) {
+            message = parsed.message;
+          }
+        } catch {
+          const text = await res.text();
+          if (text) {
+            message = text;
+          }
+        }
+
+        throw new Error(message);
+      }
+
+      return res.status;
     },
   });
 };

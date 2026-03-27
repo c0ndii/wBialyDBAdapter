@@ -49,6 +49,27 @@ export type LoginUser = {
   password: string;
 };
 
+export type LoginChallengeRequest = {
+  login: string;
+};
+
+export type LoginChallengeResponse = {
+  partialPasswordId: number;
+  requiredPositions: number[];
+  totalPasswordLength: number;
+};
+
+export type VerifyLoginRequest = {
+  login: string;
+  partialPasswordId: number;
+  providedCharacters: Record<number, string>;
+};
+
+export type ChangeMasterPasswordRequest = {
+  oldPassword: string;
+  newPassword: string;
+};
+
 export type UserSecuritySettings = {
   isLockoutEnabled: boolean;
   maxFailedLoginAttempts: number;

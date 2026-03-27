@@ -1,7 +1,13 @@
 import {
+  useChangeMasterPassword,
+  useLogout,
   useSecurityOverview,
   useUpdateSecuritySettings,
 } from "@/api/hooks/user";
+import {
+  changeMasterPasswordSchema,
+  type ChangeMasterPasswordSchema,
+} from "@/schema/change-master-password.schema";
 import {
   securitySettingsSchema,
   type SecuritySettingsSchema,
@@ -32,6 +38,8 @@ export const Route = createLazyFileRoute("/security/settings")({
 function SecuritySettingsView() {
   const { data: overview, isLoading, isError } = useSecurityOverview();
   const updateSettings = useUpdateSecuritySettings();
+  const changeMasterPassword = useChangeMasterPassword();
+  const logout = useLogout();
 
   const form = useForm<SecuritySettingsSchema>({
     defaultValues: {
@@ -40,6 +48,15 @@ function SecuritySettingsView() {
       isPasswordManagerEnabled: true,
     },
     resolver: zodResolver(securitySettingsSchema),
+  });
+
+  const passwordForm = useForm<ChangeMasterPasswordSchema>({
+    defaultValues: {
+      oldPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+    resolver: zodResolver(changeMasterPasswordSchema),
   });
 
   useEffect(() => {
@@ -83,6 +100,16 @@ function SecuritySettingsView() {
       PASSWORD_MANAGER_STORAGE_KEY,
       String(data.isPasswordManagerEnabled),
     );
+  });
+
+  const handleChangeMasterPassword = passwordForm.handleSubmit(async (data) => {
+    await changeMasterPassword.mutateAsync({
+      oldPassword: data.oldPassword,
+      newPassword: data.newPassword,
+    });
+
+    passwordForm.reset();
+    await logout.mutateAsync();
   });
 
   return (
@@ -179,6 +206,66 @@ function SecuritySettingsView() {
               )}
             </Box>
           )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader
+          title="Master password"
+          subheader="Change your master password. After change you will be logged out."
+        />
+        <CardContent>
+          <Box
+            component="form"
+            sx={{ display: "grid", gap: 2 }}
+            noValidate
+            onSubmit={handleChangeMasterPassword}
+          >
+            <TextField
+              type="password"
+              label="Current password"
+              autoComplete="current-password"
+              {...passwordForm.register("oldPassword")}
+              error={!!passwordForm.formState.errors.oldPassword}
+              helperText={passwordForm.formState.errors.oldPassword?.message}
+            />
+
+            <TextField
+              type="password"
+              label="New password"
+              autoComplete="new-password"
+              {...passwordForm.register("newPassword")}
+              error={!!passwordForm.formState.errors.newPassword}
+              helperText={passwordForm.formState.errors.newPassword?.message}
+            />
+
+            <TextField
+              type="password"
+              label="Confirm new password"
+              autoComplete="new-password"
+              {...passwordForm.register("confirmNewPassword")}
+              error={!!passwordForm.formState.errors.confirmNewPassword}
+              helperText={
+                passwordForm.formState.errors.confirmNewPassword?.message
+              }
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={changeMasterPassword.isPending || logout.isPending}
+            >
+              Change password
+            </Button>
+
+            {changeMasterPassword.isError && (
+              <Alert severity="error">
+                {changeMasterPassword.error instanceof Error
+                  ? changeMasterPassword.error.message
+                  : "Failed to change password."}
+              </Alert>
+            )}
+          </Box>
         </CardContent>
       </Card>
 
